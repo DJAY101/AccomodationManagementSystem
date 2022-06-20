@@ -40,6 +40,23 @@ namespace AccomodationManagementSystem
 
         private void buttonBorder_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+
+            var thePass = CreatePasswordBox.Password;
+            using (LoginDataContext context = new LoginDataContext())
+            {
+                bool accessGranted = context.m_loginInfo.Any(loginDetails => loginDetails.Password == thePass);
+                if (accessGranted)
+                {
+                    MainWindow MainApp = new MainWindow();
+                    this.Close();
+                    MainApp.Show();
+                }
+
+            }
+
+
+
+
             if (CreatePasswordBox.Password == "") {
                 errorLabel.Content = "Please Enter a Password";
             } else if(ConfirmPasswordBox.Password == "")
