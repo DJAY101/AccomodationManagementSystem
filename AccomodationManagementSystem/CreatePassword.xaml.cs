@@ -29,30 +29,28 @@ namespace AccomodationManagementSystem
         private void buttonBorder_MouseEnter(object sender, MouseEventArgs e)
         {
             buttonBorder.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#56B3F5");
-            Trace.WriteLine("In");
         }
 
         private void buttonBorder_MouseLeave(object sender, MouseEventArgs e)
         {
             buttonBorder.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#919AF4");
-            Trace.WriteLine("Out");
         }
 
         private void buttonBorder_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
 
-            var thePass = CreatePasswordBox.Password;
-            using (LoginDataContext context = new LoginDataContext())
-            {
-                bool accessGranted = context.m_loginInfo.Any(loginDetails => loginDetails.Password == thePass);
-                if (accessGranted)
-                {
-                    MainWindow MainApp = new MainWindow();
-                    this.Close();
-                    MainApp.Show();
-                }
+            //var thePass = CreatePasswordBox.Password;
+            //using (LoginDataContext context = new LoginDataContext())
+            //{
+            //    bool accessGranted = context.m_loginInfo.Any(loginDetails => loginDetails.Password == thePass);
+            //    if (accessGranted)
+            //    {
+            //        MainWindow MainApp = new MainWindow();
+            //        this.Close();
+            //        MainApp.Show();
+            //    }
 
-            }
+            //}
 
 
 
@@ -65,6 +63,25 @@ namespace AccomodationManagementSystem
             } else if ( CreatePasswordBox.Password != ConfirmPasswordBox.Password) {
                 errorLabel.Content = "The Passwords do not match";
             }
+
+            if (CreatePasswordBox.Password == ConfirmPasswordBox.Password) {
+                using (LoginDataContext context = new LoginDataContext())
+                {
+                    //creates a new login info into the database with the chosen password
+                    loginInfo temp = new loginInfo();
+                    temp.Password = ConfirmPasswordBox.Password;
+                    temp.user = "ADMIN";
+                    context.m_loginInfo.Add(temp);
+                    context.SaveChanges();
+                }
+                //opens the main window and closes the current one
+                MainWindow MainApp = new MainWindow();
+                MainApp.Show();
+                this.Close();
+
+            }
+
+
         }
     }
 }

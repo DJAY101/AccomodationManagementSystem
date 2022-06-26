@@ -7,6 +7,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-
+        <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+        <TextBox FontSize="15">Accommodation is cool</TextBox>
+        </Grid>
     </Grid>
 </Window>

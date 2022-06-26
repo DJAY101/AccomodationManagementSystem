@@ -20,16 +20,18 @@ namespace AccomodationManagementSystem
         {
             DatabaseFacade fascade = new DatabaseFacade(new LoginDataContext());
             fascade.EnsureCreated();
+
             using(LoginDataContext context = new LoginDataContext()) {
 
-                bool entryExists = context.m_loginInfo.Any(loginDetails => loginDetails.user == "og");
+                bool entryExists = context.m_loginInfo.Any(loginDetails => loginDetails.user == "ADMIN");
 
-                if (!entryExists) {
-                    loginInfo temp = new loginInfo();
-                    temp.Password = "1234";
-                    temp.user = "og";
-                    context.m_loginInfo.Add(temp);
-                    context.SaveChanges();
+                if (!entryExists)
+                {
+                    StartupUri = new Uri("/AccomodationManagementSystem;component/CreatePassword.xaml", UriKind.Relative);
+                }
+                else 
+                {
+                    StartupUri = new Uri("/AccomodationManagementSystem;component/loginScreen.xaml", UriKind.Relative);
                 }
             
             }
