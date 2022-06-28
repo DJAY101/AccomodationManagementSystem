@@ -5,10 +5,54 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AccomodationManagementSystem"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
-        <TextBox FontSize="15">Accommodation is cool</TextBox>
-        </Grid>
-    </Grid>
+        Title="MainWindow" Height="1080" Width="1920">
+
+
+
+    <DockPanel LastChildFill="True">
+        <Border DockPanel.Dock="Left" MaxWidth="200" HorizontalAlignment="Left" BorderThickness="10" BorderBrush="DarkKhaki">
+            <Grid>
+                <StackPanel VerticalAlignment="Top">
+                    <Button FontSize="60" Content="Add"></Button>
+                </StackPanel>
+                <StackPanel VerticalAlignment="Bottom">
+                <Button FontSize="50">Support</Button>
+                <Button FontSize="50">Log Out</Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <Border DockPanel.Dock="Top" MaxHeight="100" VerticalAlignment="Top" BorderThickness="10" BorderBrush="MediumPurple">
+            <TextBlock TextAlignment="Center" FontSize="50">DATE</TextBlock>
+        </Border>
+        <Border BorderThickness="5" BorderBrush="ForestGreen" DockPanel.Dock="Bottom">
+            <DockPanel LastChildFill="True"  VerticalAlignment="Bottom" MaxHeight="100">
+                <Button x:Name="previousMonth_B" Click="previousMonth_B_Click" FontSize="40">ARROW LEFT</Button>
+                <Button x:Name="nextMonth_B" Click="nextMonth_B_Click" FontSize="40" HorizontalAlignment="Right" DockPanel.Dock="Right">ARROW RIGHT</Button>
+                <TextBlock x:Name="CurrentMonth" FontSize="50" HorizontalAlignment="Center">MONTH - YEAR</TextBlock>
+            </DockPanel>
+        </Border>
+        <DataGrid x:Name="vacancyTable" RowHeight="40" AutoGenerateColumns="False">
+            <!--<DataGrid.Columns>
+                <DataGridTextColumn Header="room" Binding="{Binding Path = room}">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Background" Value="{Binding Path= colour[]}">
+                                
+                            </Setter>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="room" Binding="{Binding Path = book}">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Background" Value="{Binding Path= colour[0]}">
+
+                            </Setter>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>-->
+        </DataGrid>
+        
+    </DockPanel>        
 </Window>
