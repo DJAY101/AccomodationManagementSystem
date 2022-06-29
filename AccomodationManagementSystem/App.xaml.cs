@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-
+using AccomodationManagementSystem.VacancyDatabaseClasses;
 
 namespace AccomodationManagementSystem
 {
@@ -18,10 +18,13 @@ namespace AccomodationManagementSystem
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            DatabaseFacade fascade = new DatabaseFacade(new LoginDataContext());
-            fascade.EnsureCreated();
+            DatabaseFacade loginDatabase = new DatabaseFacade(new LoginDataContext());
+            loginDatabase.EnsureCreated();
 
-            using(LoginDataContext context = new LoginDataContext()) {
+            DatabaseFacade accomodationDatabase = new DatabaseFacade(new AccomodationContext());
+            accomodationDatabase.EnsureCreated();
+
+            using (LoginDataContext context = new LoginDataContext()) {
 
                 bool entryExists = context.m_loginInfo.Any(loginDetails => loginDetails.user == "ADMIN");
 

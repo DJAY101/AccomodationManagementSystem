@@ -13,10 +13,14 @@
         <Border DockPanel.Dock="Left" MaxWidth="200" HorizontalAlignment="Left" BorderThickness="10" BorderBrush="DarkKhaki">
             <Grid>
                 <StackPanel VerticalAlignment="Top">
-                    <Button FontSize="60" Content="Add"></Button>
+                    <Button x:Name="AddBooking_B" FontSize="60" Content="Add" Click="AddBooking_B_Click"></Button>
+                    <Button FontSize="40">Show Info</Button>
+                    <Button FontSize="50">Delete</Button>
+
                 </StackPanel>
                 <StackPanel VerticalAlignment="Bottom">
                 <Button FontSize="50">Support</Button>
+                <Button FontSize="50">Settings</Button>
                 <Button FontSize="50">Log Out</Button>
                 </StackPanel>
             </Grid>

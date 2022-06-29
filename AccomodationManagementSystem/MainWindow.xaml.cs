@@ -77,6 +77,7 @@ namespace AccomodationManagementSystem
             //setup for the vacancy table
             vacancyTable.IsReadOnly = true;
             vacancyTable.CanUserResizeColumns = false;
+            vacancyTable.CanUserResizeRows = false;
             vacancyTable.CanUserSortColumns = false;
             vacancyTable.SelectionUnit = DataGridSelectionUnit.Cell;
             vacancyTable.SelectionMode = DataGridSelectionMode.Single;
@@ -171,12 +172,12 @@ namespace AccomodationManagementSystem
 
             vacancyTable.Columns.Add(firstColumn);
             
-            //add the 11 rooms into the datagrid
+            //add the 10 rooms into the datagrid
             for (int i = 1; i < 11; i++) {
                 List<string> accomodations = new List<string>();
                 List<Brush>? vacancyColours = new List<Brush>();
                 Brush blue = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-                Brush red = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+                Brush bookedColour = new SolidColorBrush(Color.FromRgb(81, 105, 252));
                 //temporary generate random vacancy
                 for (int c = 0; c < 30; c++)
                 {
@@ -188,7 +189,7 @@ namespace AccomodationManagementSystem
                     }
                     else { 
                         accomodations.Add("no"); 
-                        vacancyColours.Add(red);
+                        vacancyColours.Add(bookedColour);
                     }
                 }
 
@@ -200,15 +201,44 @@ namespace AccomodationManagementSystem
             DateTime lastDay = new DateTime(loadedMonth.Year, loadedMonth.Month, firstDay.AddMonths(1).AddDays(-1).Day);
             for (int i = 0; i < lastDay.Day; i++)
             {
+                //create a new column and give it a header of its date
                 DataGridTextColumn column = new DataGridTextColumn();
                 column.Header = firstDay.AddDays(i).ToString("dd-MM");
+                //binds the vacancy text to the columns cells
                 column.Binding = new Binding("vacancy["+i+"]");
 
+                //If the header date is the current date then change the colour of the header cell
+                if (firstDay.AddDays(i).Date == DateTime.Now.Date)
+                {
+                    Brush CurrentDateHeaderColour = new SolidColorBrush(Color.FromRgb(218, 106, 67));
+                    Brush White = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+
+                    Style CurrentDateHeaderStyle = new Style();
+
+                    CurrentDateHeaderStyle.Setters.Add(new Setter() { Property = BackgroundProperty, Value = CurrentDateHeaderColour });
+                    CurrentDateHeaderStyle.Setters.Add(new Setter() { Property = ForegroundProperty, Value = White });
+                    CurrentDateHeaderStyle.Setters.Add(new Setter { Property = TextBlock.FontSizeProperty, Value = 30.0 });
+                    CurrentDateHeaderStyle.Seal();
+                    column.HeaderStyle = CurrentDateHeaderStyle;
+                }
+
+
+                Brush selectedColour = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+
+                //colour the cell depending on the vacancy status
                 Style cStyle = new Style(typeof(DataGridCell));
                 cStyle.Setters.Add(new Setter() { Property = BackgroundProperty, Value = new Binding("vacancyColour[" + i + "]") });
+
+                //trigger when a cell is selected change its cell colour
+                Trigger selectedTrig = new Trigger() { Property = DataGridCell.IsSelectedProperty, Value = true };
+                selectedTrig.Setters.Add(new Setter() { Property = BackgroundProperty, Value = selectedColour });
+                cStyle.Triggers.Add(selectedTrig);
+                // apply the style to the column
                 cStyle.Seal();
                 column.CellStyle = cStyle;
+
                 vacancyTable.Columns.Add(column);
+
             }
 
         }
@@ -228,6 +258,26 @@ namespace AccomodationManagementSystem
             loadedMonth = loadedMonth.AddMonths(-1);
             CurrentMonth.Text = loadedMonth.ToString("MMMM - yyyy");
             GenerateTable();
+
+        }
+
+        private void AddBooking_B_Click(object sender, RoutedEventArgs e)
+        {
+
+            if (vacancyTable.SelectedCells.FirstOrDefault().Column == null)
+            {
+                MessageBox.Show("Please select a cell", "Error");
+            }
+            else if(vacancyTable.SelectedCells.FirstOrDefault().Column.Header.ToString() == "Room") {
+                MessageBox.Show("Please select a valid cell", "Error");
+            }
+            else
+            {
+                vacancyData currentItem = (vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item;
+                string selectedDate = vacancyTable.SelectedCells.FirstOrDefault().Column.Header + "-" + loadedMonth.Year.ToString();
+                AddBookingWindow bookingWindow = new AddBookingWindow(selectedDate, currentItem.roomNumber);
+                bookingWindow.ShowDialog();
+            }
         }
     }
 }
