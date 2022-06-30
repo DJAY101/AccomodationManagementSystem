@@ -35,9 +35,11 @@ namespace AccomodationManagementSystem
 
         private void loadInfoTexts()
         {
-            DateFrom_T.Text = "Check-In: " + dateFrom.ToString("dd-MM-yyyy");
-            title_T.Text = "Booking Entry - Room " + roomNumber.ToString();
-
+            using (AccomodationContext context = new AccomodationContext())
+            {
+                DateFrom_T.Text = "Check-In: " + dateFrom.ToString("dd-MM-yyyy");
+                title_T.Text = "Booking Entry - Room " + roomNumber.ToString() + " " + context.m_rooms.Find(roomNumber).RoomType + " Room";
+            }
         }
 
         private void checkOut_DP_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
@@ -81,6 +83,7 @@ namespace AccomodationManagementSystem
                 context.Add(temp);
                 context.SaveChanges();
             }
+            MessageBox.Show("Saved Successfully", "Booking");
             this.Close();
 
         }

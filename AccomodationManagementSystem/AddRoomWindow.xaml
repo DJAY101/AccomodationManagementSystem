@@ -1,0 +1,40 @@
+﻿<Window x:Class="AccomodationManagementSystem.AddRoomWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AccomodationManagementSystem"
+        mc:Ignorable="d"
+        Title="AddRoomWindow" Height="350" Width="400" WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="Height" Value="30"/>
+        </Style>
+    </Window.Resources>
+    
+    
+    <DockPanel LastChildFill="True">
+        <Border DockPanel.Dock="Top" MaxHeight="50" VerticalAlignment = "Top" BorderBrush="DeepSkyBlue" BorderThickness="2">
+            <Grid>
+                <TextBlock x:Name="title_T" FontSize="30">Add A New Room</TextBlock>
+                <Button x:Name="Save_B" HorizontalAlignment="Right" Width="80" Background="DodgerBlue" Foreground="White" Click="Save_B_Click" >Save</Button>
+            </Grid>
+        </Border>
+        <Border Background="MediumPurple" Margin="30" CornerRadius="20">
+            <StackPanel Margin="30">
+                <TextBlock FontSize="20" FontWeight="DemiBold" Foreground="White"> Room Number</TextBlock>
+                <TextBox
+                    x:Name="RoomNumber_TB"
+                    ToolTipService.InitialShowDelay="500" 
+                    ToolTip="E.G 1, 2, 3 ..."/>
+                <TextBlock FontSize="20" FontWeight="DemiBold" Foreground="White"> Room Type</TextBlock>
+                <TextBox 
+                    x:Name="RoomType_TB"
+                    ToolTipService.InitialShowDelay="500" 
+                    ToolTip="E.G Queen, Twin, Double, Single"/>
+            </StackPanel>
+        </Border>
+
+    </DockPanel>
+</Window>

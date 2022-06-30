@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 using System.Diagnostics;
+using AccomodationManagementSystem.VacancyDatabaseClasses;
 
 namespace AccomodationManagementSystem
 {
@@ -34,9 +35,6 @@ namespace AccomodationManagementSystem
 
         public MainWindow()
         {
-
-
-
             InitializeComponent();
             SetupTable();
             Brush blue = new SolidColorBrush(Color.FromRgb(0, 0, 255));
@@ -97,49 +95,7 @@ namespace AccomodationManagementSystem
 
         }
 
-        //private void GenerateTable() { 
-        //    //clears the table
-        //    vacancyTable.Columns.Clear();
-        //    vacancyTable.Items.Clear();
-
-        //    //displays the first column where the room numbers are shown
-        //    DataGridTextColumn c1 = new DataGridTextColumn();
-        //    c1.Header = "Room";
-        //    c1.Binding = new Binding("room");
-
-        //    var styleColumn = new Style(typeof(TextBlock));
-        //    styleColumn.Setters.Add(new Setter { Property = TextBlock.FontSizeProperty, Value = 30.0 });
-        //    styleColumn.Seal();
-
-        //    c1.ElementStyle = styleColumn;
-        //    vacancyTable.Columns.Add(c1);
-
-        //    // adds the room numbers to the first column
-        //    for (int i = 1; i < 10; i++)
-        //    {
-        //        Dictionary<string, string> yee = new Dictionary<string, string>();
-        //        yee.Add("book1", "hello");
-        //        yee.Add("book2", "hello2");
-        //        roomNumber temp = new roomNumber() { room = i, book="hi"};
-        //        vacancyTable.Items.Add(temp);
-        //    }
-
-
-        //    // adds the dates of the month onto the columns
-        //    DateTime firstDay = new DateTime(loadedMonth.Year, loadedMonth.Month, 1);
-        //    DateTime lastDay = new DateTime(loadedMonth.Year, loadedMonth.Month, firstDay.AddMonths(1).AddDays(-1).Day);
-        //    for (int i = 0; i < lastDay.Day; i++) {
-        //        DataGridTextColumn column = new DataGridTextColumn();
-        //        column.Header = firstDay.AddDays(i).ToString("dd-MM");
-        //        if (i == 1)
-        //        {
-        //            column.Binding = new Binding("book");
-        //        }
-        //        vacancyTable.Columns.Add(column);
-        //    }
-
-
-        //}
+        
 
         public class vacancyData {
 
@@ -149,10 +105,8 @@ namespace AccomodationManagementSystem
             public string? firstName { get; set; }
             public List<string>? vacancy { get; set; }
 
-
-
         }
-        private void GenerateTable() {
+        public void GenerateTable() {
             vacancyTable.Columns.Clear();
             vacancyTable.Items.Clear();
 
@@ -171,30 +125,32 @@ namespace AccomodationManagementSystem
             firstColumn.ElementStyle = styleColumn;
 
             vacancyTable.Columns.Add(firstColumn);
-            
-            //add the 10 rooms into the datagrid
-            for (int i = 1; i < 11; i++) {
-                List<string> accomodations = new List<string>();
-                List<Brush>? vacancyColours = new List<Brush>();
-                Brush blue = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-                Brush bookedColour = new SolidColorBrush(Color.FromRgb(81, 105, 252));
-                //temporary generate random vacancy
-                for (int c = 0; c < 30; c++)
+
+            using (AccomodationContext context = new AccomodationContext())
+            {
+                //Load all rooms from database
+                foreach (var room in context.m_rooms)
                 {
-                    if (rand.NextDouble() < 0.5)
+                    List<string> accomodations = new List<string>();
+                    List<Brush>? vacancyColours = new List<Brush>();
+                    Brush blue = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+                    Brush bookedColour = new SolidColorBrush(Color.FromRgb(81, 105, 252));
+                    //temporary generate random vacancy
+                    for (int c = 0; c < 30; c++)
                     {
-                        accomodations.Add("yes");
-                        vacancyColours.Add(blue);
-                        
+                        if (rand.NextDouble() < 0.5)
+                        {
+                            accomodations.Add("yes");
+                            vacancyColours.Add(blue);
+                        }
+                        else
+                        {
+                            accomodations.Add("no");
+                            vacancyColours.Add(bookedColour);
+                        }
                     }
-                    else { 
-                        accomodations.Add("no"); 
-                        vacancyColours.Add(bookedColour);
-                    }
+                    vacancyTable.Items.Add(new vacancyData() { roomNumber = room.id, vacancy = accomodations, vacancyColour = vacancyColours });
                 }
-
-                vacancyTable.Items.Add(new vacancyData() { roomNumber = i, vacancy = accomodations, vacancyColour = vacancyColours});
-
             }
             //generates all the dates of the month
             DateTime firstDay = new DateTime(loadedMonth.Year, loadedMonth.Month, 1);
@@ -278,6 +234,12 @@ namespace AccomodationManagementSystem
                 AddBookingWindow bookingWindow = new AddBookingWindow(selectedDate, currentItem.roomNumber);
                 bookingWindow.ShowDialog();
             }
+        }
+
+        private void AddRoom_B_Click(object sender, RoutedEventArgs e)
+        {
+            AddRoomWindow addRoomWindow = new AddRoomWindow();
+            addRoomWindow.ShowDialog();
         }
     }
 }

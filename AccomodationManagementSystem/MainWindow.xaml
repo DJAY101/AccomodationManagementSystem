@@ -19,9 +19,10 @@
 
                 </StackPanel>
                 <StackPanel VerticalAlignment="Bottom">
-                <Button FontSize="50">Support</Button>
-                <Button FontSize="50">Settings</Button>
-                <Button FontSize="50">Log Out</Button>
+                    <Button x:Name="AddRoom_B" FontSize="35" Click="AddRoom_B_Click">Add Room</Button>
+                    <Button FontSize="50">Support</Button>
+                    <Button FontSize="50">Settings</Button>
+                    <Button FontSize="50">Log Out</Button>
                 </StackPanel>
             </Grid>
         </Border>
