@@ -83,6 +83,7 @@ namespace AccomodationManagementSystem
                 context.Add(temp);
                 context.SaveChanges();
             }
+            Application.Current.Windows.OfType<MainWindow>().FirstOrDefault().GenerateTable();
             MessageBox.Show("Saved Successfully", "Booking");
             this.Close();
 
