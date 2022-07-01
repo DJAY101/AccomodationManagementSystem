@@ -34,6 +34,7 @@ namespace AccomodationManagementSystem
         public List<int>? bookingsIDs { get; set; }
         //the text the cell would display
         public List<string>? cellText { get; set; }
+        public Brush? roomCellColour { get; set; } = new SolidColorBrush(Color.FromRgb(255, 255, 255));
 
     }
 
@@ -91,7 +92,9 @@ namespace AccomodationManagementSystem
             return new DateTime(int.Parse(date.Split("-")[2]), int.Parse(date.Split("-")[1]), int.Parse(date.Split("-")[0]));
         }
 
-
+        public bool test() {
+            return false;
+        }
         private void loadFirstColumn() {
             //create a new column object
             DataGridTextColumn firstColumn = new DataGridTextColumn();
@@ -105,6 +108,8 @@ namespace AccomodationManagementSystem
             var styleColumn = new Style(typeof(TextBlock));
             styleColumn.Setters.Add(new Setter { Property = TextBlock.FontSizeProperty, Value = 30.0 });
             styleColumn.Seal();
+
+
             //apply the style
             firstColumn.ElementStyle = styleColumn;
             //add the column to the table
@@ -367,6 +372,87 @@ namespace AccomodationManagementSystem
 
 
 
+        }
+
+        private void Logout_B_Click(object sender, RoutedEventArgs e)
+        {
+            loginScreen loginWindow = new loginScreen();
+            loginWindow.Show();
+            this.Close();
+
+        }
+
+        private void CurrentMonth_B_Click(object sender, RoutedEventArgs e)
+        {
+            LoadCurrentMonth();
+            CurrentMonth.Text = loadedMonth.ToString("MMMM - yyyy");
+            GenerateTable();
+        }
+
+
+        private void vacancyTable_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            if (vacancyTable.SelectedCells.Count == 0) return;
+            DataGridColumn selectedColumn = vacancyTable.SelectedCells.FirstOrDefault().Column;
+            vacancyData selectedItem = (vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item;
+            DateTime selectedDate = DatabaseDateTimeStringToDateTime(selectedColumn.Header.ToString() + loadedMonth.ToString("-yyyy"));
+            using (AccomodationContext context = new AccomodationContext()) {
+                bool vacant = (selectedItem.bookingsIDs.ElementAt(selectedDate.Day - 1) == -1) ? true : false;
+
+                Vacant_T.Text = (selectedItem.bookingsIDs.ElementAt(selectedDate.Day - 1) == -1) ? "Vacant: True": "Vacant: False";
+                RoomNumber_T.Text = "Room Number: " + selectedItem.roomNumber.ToString();
+
+                int bookingID = selectedItem.bookingsIDs.ElementAt(selectedDate.Day - 1);
+                BookingID_T.Text = vacant ? "Booking ID: NA" : "Booking ID: " + (selectedItem.bookingsIDs.ElementAt(selectedDate.Day - 1)).ToString();
+                if (!vacant)
+                {
+                    FullName_T.Text = (context.m_bookings.Find(bookingID).FirstName == "") ? "Full Name: NA" : "Full Name: " + (context.m_bookings.Find(bookingID).FirstName + " " + context.m_bookings.Find(bookingID).Surname);
+                    PhoneNumber_T.Text = (context.m_bookings.Find(bookingID).PhoneNumber == "") ? "Phone Number: NA" : "Phone Number: " + context.m_bookings.Find(bookingID).PhoneNumber;
+                    ArrivalTime_T.Text = (context.m_bookings.Find(bookingID).ArrivalTime == "") ? "Arrival Time: NA" : "Arrival Time: " + context.m_bookings.Find(bookingID).ArrivalTime;
+                    ExtraDetails_T.Text = (context.m_bookings.Find(bookingID).ExtraDetails == "") ? "Extra Details: NA" : "Extra Details: " + context.m_bookings.Find(bookingID).ExtraDetails;
+                    CheckInDate_T.Text = "Check-in Date: " + context.m_bookings.Find(bookingID).CheckInDate;
+                    CheckOutDate_T.Text = "Check-out Date: " + context.m_bookings.Find(bookingID).CheckOutDate;
+                    int nights = (DatabaseDateTimeStringToDateTime(context.m_bookings.Find(bookingID).CheckOutDate) - DatabaseDateTimeStringToDateTime(context.m_bookings.Find(bookingID).CheckInDate)).Days;
+                    Nights_T.Text = "Nights: " + nights.ToString();
+                    float dailyRate = context.m_bookings.Find(bookingID).DailyRate;
+                    DailyRate_T.Text = "Daily Rate: $" + dailyRate.ToString();
+                    TotalPrice_T.Text = "Total Price: $" + (dailyRate*nights).ToString();
+                }
+                else
+                {
+                    FullName_T.Text = "Full Name: NA";
+                    PhoneNumber_T.Text = "Phone Number: NA";
+                    ArrivalTime_T.Text = "Arrival Time: NA";
+                    CheckInDate_T.Text = "Check-in Date: NA";
+                    CheckOutDate_T.Text = "Check-out Date: NA";
+                    Nights_T.Text = "Nights: NA";
+                    DailyRate_T.Text = "Daily Rate: NA";
+                    TotalPrice_T.Text = "Total Price: NA";
+                }
+
+            }
+
+        }
+
+
+        private void SearchMonth_B_Click(object sender, RoutedEventArgs e)
+        {
+            if (searchMonth_C.IsVisible) { 
+                searchMonth_C.Visibility = Visibility.Collapsed;
+            } else
+            {
+                searchMonth_C.DisplayMode = CalendarMode.Year;
+                searchMonth_C.Visibility= Visibility.Visible;
+            }
+        }
+
+        private void searchMonth_C_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (searchMonth_C.SelectedDate == null) return;
+            loadedMonth = (DateTime) searchMonth_C.SelectedDate;
+            searchMonth_C.Visibility = Visibility.Collapsed;
+            CurrentMonth.Text = loadedMonth.ToString("MMMM - yyyy");
+            GenerateTable();
         }
     }
 }

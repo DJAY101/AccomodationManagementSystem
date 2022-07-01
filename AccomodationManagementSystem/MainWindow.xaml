@@ -5,24 +5,32 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AccomodationManagementSystem"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1080" Width="1920">
+        Title="Accomi Accommodation Management" Height="1080" Width="1920">
 
 
+    <Window.Resources>
+        <Style x:Key="infoTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20"/>
+        </Style>
+    </Window.Resources>
 
     <DockPanel LastChildFill="True">
-        <Border DockPanel.Dock="Left" MaxWidth="200" HorizontalAlignment="Left" BorderThickness="10" BorderBrush="DarkKhaki">
+        <Border DockPanel.Dock="Left" Width="270" HorizontalAlignment="Left" BorderThickness="10" BorderBrush="DarkKhaki">
             <Grid>
                 <StackPanel VerticalAlignment="Top">
                     <Button x:Name="AddBooking_B" FontSize="50" Content="Add" Click="AddBooking_B_Click"></Button>
                     <Button FontSize="50">Edit</Button>
                     <Button x:Name="DeleteBooking_B" FontSize="50" Click="DeleteBooking_B_Click">Delete</Button>
+                    <Button x:Name="SearchMonth_B" FontSize="35" Click="SearchMonth_B_Click">Search Month</Button>
+                    <Calendar x:Name="searchMonth_C" DisplayMode="Year" SelectionMode="SingleDate" SelectedDatesChanged="searchMonth_C_SelectedDatesChanged" Visibility="Collapsed"></Calendar>
+                    <Button x:Name="CurrentMonth_B" FontSize="35" Click="CurrentMonth_B_Click">Current Month</Button>
 
                 </StackPanel>
                 <StackPanel VerticalAlignment="Bottom">
                     <Button x:Name="AddRoom_B" FontSize="35" Click="AddRoom_B_Click">Add Room</Button>
                     <Button FontSize="50">Support</Button>
                     <Button FontSize="50">Settings</Button>
-                    <Button FontSize="50">Log Out</Button>
+                    <Button x:Name="Logout_B" FontSize="40" Click="Logout_B_Click">Log Out</Button>
                 </StackPanel>
             </Grid>
         </Border>
@@ -36,9 +44,32 @@
                 <TextBlock x:Name="CurrentMonth" FontSize="50" HorizontalAlignment="Center">MONTH - YEAR</TextBlock>
             </DockPanel>
         </Border>
-        <DataGrid x:Name="vacancyTable" RowHeight="40" AutoGenerateColumns="False">
-        </DataGrid>
-        
-        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1.5*"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <DataGrid x:Name="vacancyTable" RowHeight="40" AutoGenerateColumns="False" Grid.Row="0" SelectedCellsChanged="vacancyTable_SelectedCellsChanged"/>
+            <StackPanel Grid.Row="1">
+                <TextBlock x:Name="Vacant_T" Style="{StaticResource infoTextStyle}"> Vacant: NA</TextBlock>
+                <TextBlock x:Name="RoomNumber_T" Style="{StaticResource infoTextStyle}"> Room Number: NA</TextBlock>
+                <TextBlock x:Name="BookingID_T" Style="{StaticResource infoTextStyle}"> Booking ID: NA</TextBlock>
+                <TextBlock x:Name="FullName_T" Style="{StaticResource infoTextStyle}"> Full Name: NA</TextBlock>
+                <TextBlock x:Name="PhoneNumber_T" Style="{StaticResource infoTextStyle}"> Phone Number: NA</TextBlock>
+                <TextBlock x:Name="ArrivalTime_T" Style="{StaticResource infoTextStyle}"> Arrival Time: NA</TextBlock>
+                <TextBlock x:Name="ExtraDetails_T" Style="{StaticResource infoTextStyle}"> Extra Details: NA</TextBlock>
+                <TextBlock x:Name="CheckInDate_T" Style="{StaticResource infoTextStyle}"> Check In Date: NA</TextBlock>
+                <TextBlock x:Name="CheckOutDate_T" Style="{StaticResource infoTextStyle}"> Check Out Date: NA</TextBlock>
+                <TextBlock x:Name="Nights_T" Style="{StaticResource infoTextStyle}"> Nights: NA</TextBlock>
+                <TextBlock x:Name="DailyRate_T" Style="{StaticResource infoTextStyle}"> Daily Rate: NA</TextBlock>
+                <TextBlock x:Name="TotalPrice_T" Style="{StaticResource infoTextStyle}"> Total Price: NA</TextBlock>
+
+
+            </StackPanel>
+
+
+        </Grid>
+
     </DockPanel>        
 </Window>
