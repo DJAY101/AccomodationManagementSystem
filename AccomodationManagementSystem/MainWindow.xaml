@@ -13,8 +13,8 @@
         <Border DockPanel.Dock="Left" MaxWidth="200" HorizontalAlignment="Left" BorderThickness="10" BorderBrush="DarkKhaki">
             <Grid>
                 <StackPanel VerticalAlignment="Top">
-                    <Button x:Name="AddBooking_B" FontSize="60" Content="Add" Click="AddBooking_B_Click"></Button>
-                    <Button FontSize="40">Show Info</Button>
+                    <Button x:Name="AddBooking_B" FontSize="50" Content="Add" Click="AddBooking_B_Click"></Button>
+                    <Button FontSize="50">Edit</Button>
                     <Button x:Name="DeleteBooking_B" FontSize="50" Click="DeleteBooking_B_Click">Delete</Button>
 
                 </StackPanel>
@@ -37,27 +37,8 @@
             </DockPanel>
         </Border>
         <DataGrid x:Name="vacancyTable" RowHeight="40" AutoGenerateColumns="False">
-            <!--<DataGrid.Columns>
-                <DataGridTextColumn Header="room" Binding="{Binding Path = room}">
-                    <DataGridTextColumn.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Setter Property="Background" Value="{Binding Path= colour[]}">
-                                
-                            </Setter>
-                        </Style>
-                    </DataGridTextColumn.CellStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="room" Binding="{Binding Path = book}">
-                    <DataGridTextColumn.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Setter Property="Background" Value="{Binding Path= colour[0]}">
-
-                            </Setter>
-                        </Style>
-                    </DataGridTextColumn.CellStyle>
-                </DataGridTextColumn>
-            </DataGrid.Columns>-->
         </DataGrid>
+        
         
     </DockPanel>        
 </Window>

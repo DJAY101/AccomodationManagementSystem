@@ -21,11 +21,27 @@ using AccomodationManagementSystem.VacancyDatabaseClasses;
 
 namespace AccomodationManagementSystem
 {
+
+
+    // Defines the vacancy data class, which will become the Item's class that is passed into the table
+    public class vacancyData
+    {
+        //The room number of the row
+        public int roomNumber { get; set; }
+        //colour of cell in the row
+        public List<Brush>? vacancyColour { get; set; }
+        //booking id's of cell in the row
+        public List<int>? bookingsIDs { get; set; }
+        //the text the cell would display
+        public List<string>? cellText { get; set; }
+
+    }
+
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     /// 
-
 
     public partial class MainWindow : Window
     {
@@ -68,19 +84,7 @@ namespace AccomodationManagementSystem
             CurrentMonth.Text = loadedMonth.ToString("MMMM - yyyy");
         }
 
-        // Defines the vacancy data class, which will become the Item's class that is passed into the table
-        public class vacancyData
-        {
-            //The room number of the row
-            public int roomNumber { get; set; }
-            //colour of cell in the row
-            public List<Brush>? vacancyColour { get; set; }
-            //booking id's of cell in the row
-            public List<int>? bookingsIDs { get; set; }
-            //the text the cell would display
-            public List<string>? cellText { get; set; }
 
-        }
         // converts strings in the form of dd-MM-yyyy to a DateTime Object
         private DateTime DatabaseDateTimeStringToDateTime(string date)
         {
@@ -234,7 +238,8 @@ namespace AccomodationManagementSystem
                                     //if it's on the first date then add a cell text showing the first name of the booking else fill with nothing
                                     if (bookedDate == bookedDatesSorted.ElementAt(bookDatesOffsetCounter).Value.ElementAt(0))
                                     {
-                                        firstName.Add(context.m_bookings.Find(bookedDatesSorted.ElementAt(bookDatesOffsetCounter).Key).FirstName);
+                                        //adds the first name of the booking if present otherwise show no name
+                                        firstName.Add((context.m_bookings.Find(bookedDatesSorted.ElementAt(bookDatesOffsetCounter).Key).FirstName == "") ? "No Name": context.m_bookings.Find(bookedDatesSorted.ElementAt(bookDatesOffsetCounter).Key).FirstName);
                                     }
                                     else {
                                         firstName.Add("");
@@ -291,30 +296,33 @@ namespace AccomodationManagementSystem
 
         private void AddBooking_B_Click(object sender, RoutedEventArgs e)
         {
-            if (validateCell())
-            {
-                vacancyData currentItem = (vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item;
+            if (!validateCell()) return; // checks if a valid cell is selected
 
-                if (currentItem.bookingsIDs[int.Parse(vacancyTable.SelectedCells.FirstOrDefault().Column.Header.ToString().Split("-")[0]) - 1] == -1)
-                {
-                    string selectedDate = vacancyTable.SelectedCells.FirstOrDefault().Column.Header + "-" + loadedMonth.Year.ToString();
-                    AddBookingWindow bookingWindow = new AddBookingWindow(selectedDate, currentItem.roomNumber);
-                    bookingWindow.ShowDialog();
-                }
-                else
-                {
-                    MessageBox.Show("There is already a booking on the selected cell", "Error Adding Booking");
-                }
+            //a variable showing the current item that includes the selected cell
+            vacancyData currentItem = (vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item; 
+
+            //checks if the selected cell already has a booking ID atteched to it, if there is then display an error in adding a booking, (-1 shows there is no booking ID's)
+            if (currentItem.bookingsIDs[int.Parse(vacancyTable.SelectedCells.FirstOrDefault().Column.Header.ToString().Split("-")[0]) - 1] == -1)
+            {
+                string selectedDate = vacancyTable.SelectedCells.FirstOrDefault().Column.Header + "-" + loadedMonth.Year.ToString();
+                AddBookingWindow bookingWindow = new AddBookingWindow(selectedDate, currentItem.roomNumber);
+                bookingWindow.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("There is already a booking on the selected cell", "Error Adding Booking");
             }
         }
         private void AddRoom_B_Click(object sender, RoutedEventArgs e)
         {
+            // when the add room button is clicked then create the add room window
             AddRoomWindow addRoomWindow = new AddRoomWindow();
             addRoomWindow.ShowDialog();
         }
 
         private bool validateCell()
         {
+            //chcecks if there is an cell is selected and if the cell is not in the first column (the first column shows all the room numbers and not the bookings)
             if (vacancyTable.SelectedCells.FirstOrDefault().Column == null)
             {
                 MessageBox.Show("Please select a cell", "Error");
@@ -330,31 +338,35 @@ namespace AccomodationManagementSystem
 
         private void DeleteBooking_B_Click(object sender, RoutedEventArgs e)
         {
-            if (validateCell())
+            //check if a valid cell is selected
+            if (!validateCell()) return;
+            //variable showing the current item selected and the booking ID attached to the cell
+            vacancyData currentItem = (vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item;
+            int selectedBookingID = currentItem.bookingsIDs[int.Parse(vacancyTable.SelectedCells.FirstOrDefault().Column.Header.ToString().Split("-")[0]) - 1];
+
+            //if there is no booking then skip deletion and display an error
+            if (selectedBookingID != -1)
             {
-                vacancyData currentItem = (vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item;
-                int selectedBookingID = currentItem.bookingsIDs[int.Parse(vacancyTable.SelectedCells.FirstOrDefault().Column.Header.ToString().Split("-")[0]) - 1];
-                if (selectedBookingID != -1)
+                //accessing the database
+                using (AccomodationContext context = new AccomodationContext())
                 {
-                    using (AccomodationContext context = new AccomodationContext())
+                    //create a prompt to make sure the admin want's to delete the booking, if they are sure then delete the booking
+                    if (MessageBox.Show("Are you sure you want to delete " + context.m_bookings.Find(selectedBookingID).FirstName + " " + context.m_bookings.Find(selectedBookingID).Surname + "'s Booking?", "Booking Deletion", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                     {
-
-                        if (MessageBox.Show("Are you sure you want to delete " + context.m_bookings.Find(selectedBookingID).FirstName + " " + context.m_bookings.Find(selectedBookingID).Surname + "'s Booking?", "Booking Deletion", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                        {
-                            context.m_bookings.Remove(context.m_bookings.Find(selectedBookingID));
-                            context.SaveChanges();
-                            GenerateTable();
-                        }
-
+                        context.m_bookings.Remove(context.m_bookings.Find(selectedBookingID));
+                        context.SaveChanges();
+                        GenerateTable();
                     }
-                }
-                else
-                {
-                    MessageBox.Show("No bookings selected", "Error");
-                }
 
-
+                }
             }
+            else
+            {
+                MessageBox.Show("No bookings selected", "Error");
+            }
+
+
+
         }
     }
 }

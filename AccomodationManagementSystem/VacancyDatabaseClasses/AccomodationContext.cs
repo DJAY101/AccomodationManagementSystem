@@ -11,7 +11,7 @@ namespace AccomodationManagementSystem.VacancyDatabaseClasses
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source = accomodation.db");
+            optionsBuilder.UseSqlite("Data Source = accommodation.db");
         }
 
         public DbSet<roomInfo> m_rooms { get; set; } = null!;
