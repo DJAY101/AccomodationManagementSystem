@@ -47,7 +47,7 @@ namespace AccomodationManagementSystem
     public partial class MainWindow : Window
     {
         DateTime loadedMonth = new DateTime(1, 1, 1);
-
+        private int datesGenerated = 30;
 
         public MainWindow()
         {
@@ -83,7 +83,7 @@ namespace AccomodationManagementSystem
         {
             //selects the current month to show
             loadedMonth = DateTime.Now;
-            CurrentMonth.Text = loadedMonth.ToString("MMMM - yyyy");
+            updateCurrentMonthText();
         }
 
 
@@ -128,12 +128,12 @@ namespace AccomodationManagementSystem
             loadFirstColumn();
 
             //The first and last day of the current loaded month
-            DateTime firstDay = new DateTime(loadedMonth.Year, loadedMonth.Month, 1);
-            DateTime lastDay = new DateTime(loadedMonth.Year, loadedMonth.Month, firstDay.AddMonths(1).AddDays(-1).Day);
+            DateTime firstDay = loadedMonth;
+            DateTime lastDay = loadedMonth.AddDays(datesGenerated);
             List<string> loadedDates = new List<string>();
 
             //iterates through all the dates of the month (sets up all the columns and binds their cell style)
-            for (int i = 0; i < lastDay.Day; i++)
+            for (int i = 0; i < (lastDay-firstDay).Days; i++)
             {
                 //create a new column and give it a header of its date
                 DataGridTextColumn column = new DataGridTextColumn();
@@ -232,7 +232,7 @@ namespace AccomodationManagementSystem
 
                     int bookDatesOffsetCounter = 0; // an offset to loop thorugh all the values in the dictionary
                     //loop through all the dates of the month
-                    for (int dayOffset = 0; dayOffset < lastDay.Day; dayOffset++)
+                    for (int dayOffset = 0; dayOffset < (lastDay - firstDay).Days; dayOffset++)
                     {
                         if (bookedDatesSorted != null && bookDatesOffsetCounter <= bookedDatesSorted.Count() - 1) // if the sorted dictionary is empty or reached the end of the dictionary (from the counter) then proceed to fill the rest of the cells with default colour and no text
                         {
@@ -287,7 +287,7 @@ namespace AccomodationManagementSystem
         {
             //load next month
             loadedMonth = loadedMonth.AddMonths(1);
-            CurrentMonth.Text = loadedMonth.ToString("MMMM - yyyy");
+            updateCurrentMonthText();
             GenerateTable();
         }
 
@@ -295,7 +295,7 @@ namespace AccomodationManagementSystem
         {
             //load previous month
             loadedMonth = loadedMonth.AddMonths(-1);
-            CurrentMonth.Text = loadedMonth.ToString("MMMM - yyyy");
+            updateCurrentMonthText();
             GenerateTable();
 
         }
@@ -304,14 +304,19 @@ namespace AccomodationManagementSystem
         {
             if (!validateCell()) return; // checks if a valid cell is selected
 
+            DataGridColumn selectedColumn = vacancyTable.SelectedCells.FirstOrDefault().Column;
+            string year = (loadedMonth.Month == 12 && vacancyTable.SelectedCells.FirstOrDefault().Column.Header.ToString().Split("-")[1] == "01") ? loadedMonth.AddYears(1).ToString("-yyyy") : loadedMonth.ToString("-yyyy");
+            DateTime selectedDate = DatabaseDateTimeStringToDateTime(selectedColumn.Header.ToString() + year);
+            int selectedElement = (selectedDate - loadedMonth).Days+1;
+
             //a variable showing the current item that includes the selected cell
             vacancyData currentItem = (vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item; 
 
             //checks if the selected cell already has a booking ID atteched to it, if there is then display an error in adding a booking, (-1 shows there is no booking ID's)
-            if (currentItem.bookingsIDs[int.Parse(vacancyTable.SelectedCells.FirstOrDefault().Column.Header.ToString().Split("-")[0]) - 1] == -1)
+            if (currentItem.bookingsIDs[selectedElement] == -1)
             {
-                string selectedDate = vacancyTable.SelectedCells.FirstOrDefault().Column.Header + "-" + loadedMonth.Year.ToString();
-                AddBookingWindow bookingWindow = new AddBookingWindow(selectedDate, currentItem.roomNumber);
+                string selectedDate_S = vacancyTable.SelectedCells.FirstOrDefault().Column.Header + "-" + loadedMonth.Year.ToString();
+                AddBookingWindow bookingWindow = new AddBookingWindow(selectedDate_S, currentItem.roomNumber);
                 bookingWindow.ShowDialog();
             }
             else
@@ -346,9 +351,15 @@ namespace AccomodationManagementSystem
         {
             //check if a valid cell is selected
             if (!validateCell()) return;
+
+            DataGridColumn selectedColumn = vacancyTable.SelectedCells.FirstOrDefault().Column;
+            string year = (loadedMonth.Month == 12 && vacancyTable.SelectedCells.FirstOrDefault().Column.Header.ToString().Split("-")[1] == "01") ? loadedMonth.AddYears(1).ToString("-yyyy") : loadedMonth.ToString("-yyyy");
+            DateTime selectedDate = DatabaseDateTimeStringToDateTime(selectedColumn.Header.ToString() + year);
+            int selectedElement = (selectedDate - loadedMonth).Days+1;
+
             //variable showing the current item selected and the booking ID attached to the cell
             vacancyData currentItem = (vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item;
-            int selectedBookingID = currentItem.bookingsIDs[int.Parse(vacancyTable.SelectedCells.FirstOrDefault().Column.Header.ToString().Split("-")[0]) - 1];
+            int selectedBookingID = currentItem.bookingsIDs[selectedElement];
 
             //if there is no booking then skip deletion and display an error
             if (selectedBookingID != -1)
@@ -400,17 +411,18 @@ namespace AccomodationManagementSystem
 
             DataGridColumn selectedColumn = vacancyTable.SelectedCells.FirstOrDefault().Column;
             vacancyData selectedItem = (vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item;
-            DateTime selectedDate = DatabaseDateTimeStringToDateTime(selectedColumn.Header.ToString() + loadedMonth.ToString("-yyyy"));
-
+            string year = (loadedMonth.Month == 12 && vacancyTable.SelectedCells.FirstOrDefault().Column.Header.ToString().Split("-")[1] == "01") ? loadedMonth.AddYears(1).ToString("-yyyy") : loadedMonth.ToString("-yyyy");
+            DateTime selectedDate = DatabaseDateTimeStringToDateTime(selectedColumn.Header.ToString() + year);
+            int selectedElement = (selectedDate - loadedMonth).Days+1;
             using (AccomodationContext context = new AccomodationContext()) {
-                bool vacant = (selectedItem.bookingsIDs.ElementAt(selectedDate.Day - 1) == -1) ? true : false;
+                bool vacant = (selectedItem.bookingsIDs.ElementAt(selectedElement) == -1) ? true : false;
 
-                Vacant_T.Text = (selectedItem.bookingsIDs.ElementAt(selectedDate.Day - 1) == -1) ? "Vacant: True": "Vacant: False";
+                Vacant_T.Text = (selectedItem.bookingsIDs.ElementAt(selectedElement) == -1) ? "Vacant: True": "Vacant: False";
                 RoomNumber_T.Text = "Room Number: " + selectedItem.roomNumber.ToString();
                 RoomType_T.Text = "Room Type: " + context.m_rooms.Find(selectedItem.roomNumber).RoomType;
 
-                int bookingID = selectedItem.bookingsIDs.ElementAt(selectedDate.Day - 1);
-                BookingID_T.Text = vacant ? "Booking ID: NA" : "Booking ID: " + (selectedItem.bookingsIDs.ElementAt(selectedDate.Day - 1)).ToString();
+                int bookingID = selectedItem.bookingsIDs.ElementAt(selectedElement);
+                BookingID_T.Text = vacant ? "Booking ID: NA" : "Booking ID: " + (selectedItem.bookingsIDs.ElementAt(selectedElement)).ToString();
                 if (!vacant)
                 {
                     FullName_T.Text = (context.m_bookings.Find(bookingID).FirstName == "") ? "Full Name: NA" : "Full Name: " + (context.m_bookings.Find(bookingID).FirstName + " " + context.m_bookings.Find(bookingID).Surname);
@@ -462,7 +474,7 @@ namespace AccomodationManagementSystem
 
             loadedMonth = (DateTime) searchMonth_C.SelectedDate;
             searchMonth_C.Visibility = Visibility.Collapsed;
-            CurrentMonth.Text = loadedMonth.ToString("MMMM - yyyy");
+            updateCurrentMonthText();
             GenerateTable();
         }
 
@@ -472,11 +484,26 @@ namespace AccomodationManagementSystem
             editRoom.ShowDialog();
         }
 
+        private void updateCurrentMonthText() {
+            if (loadedMonth.Year != loadedMonth.AddDays(datesGenerated).Year)
+            {
+                CurrentMonth.Text = loadedMonth.ToString("yyyy MMMM") + " To " + loadedMonth.AddDays(datesGenerated).ToString("yyyy MMMM");
+            } else
+            {
+                CurrentMonth.Text = loadedMonth.ToString("yyyy MMMM") + " - " + loadedMonth.AddDays(datesGenerated).ToString("MMMM");
+            }
+        }
+
         private void EditBooking_B_Click(object sender, RoutedEventArgs e)
         {
-            if (!validateCell() || ((vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item).bookingsIDs[int.Parse(vacancyTable.SelectedCells.FirstOrDefault().Column.Header.ToString().Split("-")[0])-1] == -1) return;
+            if (!validateCell()) return;
+            DataGridColumn selectedColumn = vacancyTable.SelectedCells.FirstOrDefault().Column;
+            string year = (loadedMonth.Month == 12 && vacancyTable.SelectedCells.FirstOrDefault().Column.Header.ToString().Split("-")[1] == "01") ? loadedMonth.AddYears(1).ToString("-yyyy") : loadedMonth.ToString("-yyyy");
+            DateTime selectedDate = DatabaseDateTimeStringToDateTime(selectedColumn.Header.ToString() + year);
+            int selectedElement = (selectedDate - loadedMonth).Days+1;
+            if (((vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item).bookingsIDs[selectedElement] == -1) return;
 
-            AddBookingWindow editRoomWindow = new AddBookingWindow(vacancyTable.SelectedCells.FirstOrDefault().Column.Header.ToString() + loadedMonth.ToString("-yyyy"), ((vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item).roomNumber, true, ((vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item).bookingsIDs[int.Parse(vacancyTable.SelectedCells.FirstOrDefault().Column.Header.ToString().Split("-")[0]) - 1]);
+            AddBookingWindow editRoomWindow = new AddBookingWindow(vacancyTable.SelectedCells.FirstOrDefault().Column.Header.ToString() + year , ((vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item).roomNumber, true, ((vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item).bookingsIDs[selectedElement]);
             editRoomWindow.ShowDialog();
         }
     }
