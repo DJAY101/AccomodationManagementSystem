@@ -64,6 +64,7 @@ namespace AccomodationManagementSystem
             vacancyTable.CanUserResizeColumns = false;
             vacancyTable.CanUserResizeRows = false;
             vacancyTable.CanUserSortColumns = false;
+            vacancyTable.CanUserReorderColumns =false;
 
             vacancyTable.FrozenColumnCount = 1;
 
@@ -376,6 +377,7 @@ namespace AccomodationManagementSystem
 
         private void Logout_B_Click(object sender, RoutedEventArgs e)
         {
+            //Logout of main screen and open login window up
             loginScreen loginWindow = new loginScreen();
             loginWindow.Show();
             this.Close();
@@ -384,6 +386,7 @@ namespace AccomodationManagementSystem
 
         private void CurrentMonth_B_Click(object sender, RoutedEventArgs e)
         {
+            //Load the current month
             LoadCurrentMonth();
             CurrentMonth.Text = loadedMonth.ToString("MMMM - yyyy");
             GenerateTable();
@@ -393,14 +396,18 @@ namespace AccomodationManagementSystem
         private void vacancyTable_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
             if (vacancyTable.SelectedCells.Count == 0) return;
+            if (vacancyTable.SelectedCells.FirstOrDefault().Column.Header.ToString() == "Room") return;
+
             DataGridColumn selectedColumn = vacancyTable.SelectedCells.FirstOrDefault().Column;
             vacancyData selectedItem = (vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item;
             DateTime selectedDate = DatabaseDateTimeStringToDateTime(selectedColumn.Header.ToString() + loadedMonth.ToString("-yyyy"));
+
             using (AccomodationContext context = new AccomodationContext()) {
                 bool vacant = (selectedItem.bookingsIDs.ElementAt(selectedDate.Day - 1) == -1) ? true : false;
 
                 Vacant_T.Text = (selectedItem.bookingsIDs.ElementAt(selectedDate.Day - 1) == -1) ? "Vacant: True": "Vacant: False";
                 RoomNumber_T.Text = "Room Number: " + selectedItem.roomNumber.ToString();
+                RoomType_T.Text = "Room Type: " + context.m_rooms.Find(selectedItem.roomNumber).RoomType;
 
                 int bookingID = selectedItem.bookingsIDs.ElementAt(selectedDate.Day - 1);
                 BookingID_T.Text = vacant ? "Booking ID: NA" : "Booking ID: " + (selectedItem.bookingsIDs.ElementAt(selectedDate.Day - 1)).ToString();
@@ -428,6 +435,7 @@ namespace AccomodationManagementSystem
                     Nights_T.Text = "Nights: NA";
                     DailyRate_T.Text = "Daily Rate: NA";
                     TotalPrice_T.Text = "Total Price: NA";
+                    
                 }
 
             }
@@ -437,6 +445,7 @@ namespace AccomodationManagementSystem
 
         private void SearchMonth_B_Click(object sender, RoutedEventArgs e)
         {
+            //when search month button is clicked, toggle the visibility of the calendar
             if (searchMonth_C.IsVisible) { 
                 searchMonth_C.Visibility = Visibility.Collapsed;
             } else
@@ -448,11 +457,27 @@ namespace AccomodationManagementSystem
 
         private void searchMonth_C_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
+            //if a date is selected from the calendar then load that month
             if (searchMonth_C.SelectedDate == null) return;
+
             loadedMonth = (DateTime) searchMonth_C.SelectedDate;
             searchMonth_C.Visibility = Visibility.Collapsed;
             CurrentMonth.Text = loadedMonth.ToString("MMMM - yyyy");
             GenerateTable();
+        }
+
+        private void EditRoom_B_Click(object sender, RoutedEventArgs e)
+        {
+            EditRoomWindow editRoom = new EditRoomWindow();
+            editRoom.ShowDialog();
+        }
+
+        private void EditBooking_B_Click(object sender, RoutedEventArgs e)
+        {
+            if (!validateCell() || ((vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item).bookingsIDs[int.Parse(vacancyTable.SelectedCells.FirstOrDefault().Column.Header.ToString().Split("-")[0])-1] == -1) return;
+
+            AddBookingWindow editRoomWindow = new AddBookingWindow(vacancyTable.SelectedCells.FirstOrDefault().Column.Header.ToString() + loadedMonth.ToString("-yyyy"), ((vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item).roomNumber, true, ((vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item).bookingsIDs[int.Parse(vacancyTable.SelectedCells.FirstOrDefault().Column.Header.ToString().Split("-")[0]) - 1]);
+            editRoomWindow.ShowDialog();
         }
     }
 }

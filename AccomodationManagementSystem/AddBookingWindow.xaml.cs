@@ -25,11 +25,16 @@ namespace AccomodationManagementSystem
         private DateTime dateFrom;
         private int roomNumber;
         private int stayDuration = 0;
-        public AddBookingWindow(string date, int roomNumber)
+        private int bookingID = -1;
+        private bool editBooking = false;
+        public AddBookingWindow(string date, int roomNumber, bool editBooking = false, int bookingID = -1)
         {
             InitializeComponent();
             this.dateFrom = new DateTime(int.Parse(date.Split("-")[2]), int.Parse(date.Split("-")[1]), int.Parse(date.Split("-")[0]));
             this.roomNumber = roomNumber;
+            this.editBooking = editBooking;
+            this.bookingID = bookingID;
+            this.Title = editBooking ? "Edit Booking Window" : "Add Booking Window";
             setup();
 
 
@@ -37,9 +42,17 @@ namespace AccomodationManagementSystem
 
         private void setup() {
             loadInfoTexts();
+            setCheckInAvailableDates();
             setCheckOutAvailableDates();
-            checkOut_DP.SelectedDate = dateFrom.AddDays(1); //default the checkout date to be the day after check in
-
+            if (editBooking)
+            {
+                using (AccomodationContext context = new AccomodationContext())
+                {
+                    checkOut_DP.SelectedDate = DatabaseDateTimeStringToDateTime(context.m_bookings.Find(bookingID).CheckOutDate);
+                }
+            } else {
+                checkOut_DP.SelectedDate = dateFrom.AddDays(1); //default the checkout date to be the day after check in
+            }
         }
 
         // converts strings in the form of dd-MM-yyyy to a DateTime Object
@@ -48,14 +61,58 @@ namespace AccomodationManagementSystem
             return new DateTime(int.Parse(date.Split("-")[2]), int.Parse(date.Split("-")[1]), int.Parse(date.Split("-")[0]));
         }
 
+
+        private void setCheckInAvailableDates() {
+        
+            List<DateTime> unavailableDates = new List<DateTime>();
+            using (AccomodationContext context = new AccomodationContext()) {
+
+                List<bookingInfo> bookings;
+
+                //checks if the window is in editing booking or adding booking mode, if its in editing mode then dont take into account the current booking's stay
+                if (editBooking)
+                {
+                    bookings = context.m_bookings.Where(booking => booking.id != bookingID).Where(booking => booking.RoomId == roomNumber).ToList();
+                }
+                else { 
+                    bookings = context.m_bookings.Where(booking => booking.RoomId == roomNumber).ToList();
+                }
+                //loops through all bookings attached to the selected room
+                foreach (bookingInfo booking in bookings)
+                {
+                    DateTime checkIn = DatabaseDateTimeStringToDateTime(booking.CheckInDate);
+                    DateTime checkOut = DatabaseDateTimeStringToDateTime(booking.CheckOutDate);
+                    //loops from the check in to the check out date adding each date into the unavailable dates list
+                    for (int dayOffset = 0; dayOffset < (checkOut-checkIn).Days; dayOffset++)
+                    {
+                        unavailableDates.Add(checkIn.AddDays(dayOffset));
+                    }
+                }
+            }
+            CheckIn_DP.BlackoutDates.Clear();
+            foreach (DateTime date in unavailableDates)
+            {
+                //sets the blackoutdates for the dates that are unavailable
+                CheckIn_DP.BlackoutDates.Add(new CalendarDateRange(date));
+            }
+
+        }
         private void setCheckOutAvailableDates() {
             //set checkout calendar start date
             checkOut_DP.DisplayDateStart = dateFrom.AddDays(1);
             //set checkout calender end date to the next date that has a booking
             using (AccomodationContext context = new AccomodationContext()) {
 
+                IEnumerable<bookingInfo> bookings;
                 //get all bookings that contains the current selected room id and store in a read only list
-                IEnumerable<bookingInfo> bookings = context.m_bookings.Where(booking => booking.RoomId == roomNumber);
+                if (editBooking)
+                {
+                    bookings = context.m_bookings.Where(booking => booking.id != bookingID).Where(booking => booking.RoomId == roomNumber);
+                }
+                else
+                {
+                    bookings = context.m_bookings.Where(booking => booking.RoomId == roomNumber);
+                }
                 //sort the bookings by the checkin date
                 var sortedBookings = from entry in bookings orderby DatabaseDateTimeStringToDateTime(entry.CheckInDate).Ticks ascending select entry;
                 // going through each booking in sorted bookings
@@ -77,15 +134,47 @@ namespace AccomodationManagementSystem
             //load text elements from the database
             using (AccomodationContext context = new AccomodationContext())
             {
-                DateFrom_T.Text = "Check-In: " + dateFrom.ToString("dd-MM-yyyy");
-                title_T.Text = "Booking Entry - Room " + roomNumber.ToString() + " " + context.m_rooms.Find(roomNumber).RoomType + " Room";
+                CheckIn_DP.SelectedDate = dateFrom;
+                title_T.Text = ((editBooking)? "Edit " : "") + "Booking Entry - Room " + roomNumber.ToString() + " " + context.m_rooms.Find(roomNumber).RoomType + " Room";
+                if (editBooking)
+                {
+                    loadFromDatabase();
+                }
+
+            }
+        }
+
+        private void loadFromDatabase() {
+            using (AccomodationContext context = new AccomodationContext()) { 
+                bookingInfo booking = context.m_bookings.Find(bookingID);
+                FirstName_TB.Text = booking.FirstName;
+                Surname_TB.Text = booking.Surname;
+                PhoneNumber_TB.Text = booking.PhoneNumber;
+                CheckInTime_TB.Text = booking.ArrivalTime;
+                ExtraDetails_TB.Text = booking.ExtraDetails;
+                DailyRate_TB.Text = booking.DailyRate.ToString();
+                checkOut_DP.SelectedDate = DatabaseDateTimeStringToDateTime(booking.CheckOutDate);
+            
             }
         }
 
         private void checkOut_DP_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
+            updateStayDuration();
+        }
+        private void CheckIn_DP_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(CheckIn_DP.SelectedDate != null) { dateFrom = (DateTime)CheckIn_DP.SelectedDate.Value; checkOut_DP.SelectedDate = CheckIn_DP.SelectedDate.Value.AddDays(1);}
+            
+
+            setCheckOutAvailableDates();
+            updateStayDuration();
+        }
+
+        private void updateStayDuration() {
+
             //When the checkout date has been changed check if its null if so then number of nights is 0 otherwise calculate the number of nights
-            if (checkOut_DP.SelectedDate != null)
+            if (checkOut_DP.SelectedDate != null && CheckIn_DP.SelectedDate != null)
             {
                 TimeSpan stayDuration = (DateTime)checkOut_DP.SelectedDate - dateFrom;
                 this.stayDuration = stayDuration.Days;
@@ -100,6 +189,9 @@ namespace AccomodationManagementSystem
             updateCost();
 
         }
+
+
+
         private void updateCost()
         {
             //updates the cost texts on the window according to the current provided information
@@ -125,6 +217,10 @@ namespace AccomodationManagementSystem
             using (AccomodationContext context = new AccomodationContext())
             {
                 bookingInfo temp = new bookingInfo() { FirstName = FirstName_TB.Text, Surname = Surname_TB.Text, ArrivalTime = CheckInTime_TB.Text, ExtraDetails = ExtraDetails_TB.Text, BookTime = DateTime.Now.ToString("dd-MM-yyyy"), CheckInDate = dateFrom.ToString("dd-MM-yyyy"), CheckOutDate = ((DateTime)checkOut_DP.SelectedDate).ToString("dd-MM-yyyy"), DailyRate = float.Parse(DailyRate_TB.Text), PhoneNumber = PhoneNumber_TB.Text, RoomId = roomNumber };
+                if (editBooking)
+                {
+                    context.Remove(context.m_bookings.Find(bookingID));
+                }
                 context.Add(temp);
                 context.SaveChanges();
             }
@@ -134,7 +230,6 @@ namespace AccomodationManagementSystem
             //show a dialogue that the booking has been saved then close this window
             MessageBox.Show("Saved Successfully", "Booking");
             this.Close();
-
         }
 
         private bool validateResponses()
@@ -142,10 +237,15 @@ namespace AccomodationManagementSystem
             //validates the response, checks if a checkout date has been selected and a valid nightly rate has been entered
 
             bool checkoutDateSelected = checkOut_DP.SelectedDate != null;
+            bool checkinDateSelected = CheckIn_DP.SelectedDate != null;
             bool validRate = float.TryParse(DailyRate_TB.Text, out float rate);
             if (!checkoutDateSelected)
             {
-                MessageBox.Show("Please select a checkout date.", "Error Saving");
+                MessageBox.Show("Please select a check-out date.", "Error Saving");
+            }
+            else if (!checkinDateSelected)
+            {
+                MessageBox.Show("Please select a check-in date.", "Error Saving");
             }
             else if (!validRate)
             {
@@ -159,5 +259,7 @@ namespace AccomodationManagementSystem
 
 
         }
+
+
     }
 }

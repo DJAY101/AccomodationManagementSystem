@@ -1,0 +1,39 @@
+﻿<Window x:Class="AccomodationManagementSystem.EditRoomWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AccomodationManagementSystem"
+        mc:Ignorable="d"
+        Title="EditRoomWindow" Height="370" Width="400" WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <Style x:Key="labelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="25"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+    </Window.Resources>
+    
+    <DockPanel>
+        <Border DockPanel.Dock="Top" MaxHeight="50" VerticalAlignment = "Top" BorderBrush="DeepSkyBlue" BorderThickness="2">
+            <Grid>
+                <TextBlock x:Name="title_T" FontSize="30">Edit Room</TextBlock>
+                <Button x:Name="Save_B" HorizontalAlignment="Right" Width="80" Background="DodgerBlue" Foreground="White" Click="Save_B_Click" >Save</Button>
+            </Grid>
+        </Border>
+        <Border Margin="30" Background="MediumPurple" CornerRadius="30">
+            <StackPanel Margin="20">
+                <TextBlock Style="{StaticResource ResourceKey=labelStyle}"> Select Room</TextBlock>
+                <ComboBox x:Name="RoomSelecter_CB" Height="30" SelectionChanged="RoomSelecter_CB_SelectionChanged" ></ComboBox>
+                <TextBlock Style="{StaticResource ResourceKey=labelStyle}"> Room Type</TextBlock>
+                <TextBox x:Name="RoomType_TB" Height="30"></TextBox>
+                <StackPanel Margin="0,20" Orientation="Horizontal">
+                    <TextBlock FontSize="20" Foreground="GhostWhite"> Delete Room:</TextBlock>
+                    <Button x:Name="Delete_B" Width="100" Margin="50, 0" Background="IndianRed" Foreground="White" Click="Delete_B_Click">DELETE</Button>
+                </StackPanel>
+            </StackPanel>
+        
+        </Border>
+    </DockPanel>
+
+</Window>

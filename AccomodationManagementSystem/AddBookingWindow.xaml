@@ -48,18 +48,22 @@
                 </TextBlock>
                 <TextBox x:Name="CheckInTime_TB" Height="30"></TextBox>
 
-                <TextBlock x:Name="ExtraDetails_TB" Style="{StaticResource labels}">
+                <TextBlock  Style="{StaticResource labels}">
                     Extra Details
                 </TextBlock>
-                <TextBox Height="30"></TextBox>
+                <TextBox x:Name="ExtraDetails_TB" Height="30"></TextBox>
 
             </StackPanel>
             
             <StackPanel Grid.Column="1" Margin="20">
 
-                <TextBlock x:Name="DateFrom_T" Style="{StaticResource labels}">
-                    Check-In: 23-06-22
-                </TextBlock>
+                <!--<textblock x:name="datefrom_t" style="{staticresource labels}">
+                    check-in: 23-06-22
+                </textblock>-->
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource labels}" Margin="0, 0, 10, 0" >Check-In:</TextBlock>
+                    <DatePicker x:Name="CheckIn_DP" SelectedDateChanged="CheckIn_DP_SelectedDateChanged" />
+                </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Style="{StaticResource labels}" Margin="0, 0, 10, 0">Check-Out:</TextBlock>
                     <DatePicker x:Name="checkOut_DP" SelectedDateChanged="checkOut_DP_SelectedDateChanged"></DatePicker>

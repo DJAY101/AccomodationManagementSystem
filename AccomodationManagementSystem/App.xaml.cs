@@ -18,12 +18,15 @@ namespace AccomodationManagementSystem
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            //load database for the login details
             DatabaseFacade loginDatabase = new DatabaseFacade(new LoginDataContext());
-            loginDatabase.EnsureCreated();
+            loginDatabase.EnsureCreated(); // make sure the database exists if not create it
 
+            //load database for the accomodations
             DatabaseFacade accomodationDatabase = new DatabaseFacade(new AccomodationContext());
-            accomodationDatabase.EnsureCreated();
+            accomodationDatabase.EnsureCreated();// make sure the database exists if not create it
 
+            //check if a user has been created to decide which window to open up (login/password creation)
             using (LoginDataContext context = new LoginDataContext()) {
 
                 bool entryExists = context.m_loginInfo.Any(loginDetails => loginDetails.user == "ADMIN");
