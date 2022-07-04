@@ -11,6 +11,8 @@ namespace AccomodationManagementSystem
 
         public string user { get; set; } = string.Empty;    
         public string Password { get; set; } = string.Empty;
+        public int columnGenerated_S { get; set; } = 30;
+        public bool randomCellColour_S { get; set; } = true;
 
 
 

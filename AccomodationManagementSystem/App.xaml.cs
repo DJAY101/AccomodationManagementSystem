@@ -26,6 +26,8 @@ namespace AccomodationManagementSystem
             DatabaseFacade accomodationDatabase = new DatabaseFacade(new AccomodationContext());
             accomodationDatabase.EnsureCreated();// make sure the database exists if not create it
 
+            
+
             //check if a user has been created to decide which window to open up (login/password creation)
             using (LoginDataContext context = new LoginDataContext()) {
 

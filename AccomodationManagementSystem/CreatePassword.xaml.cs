@@ -20,9 +20,24 @@ namespace AccomodationManagementSystem
     /// </summary>
     public partial class CreatePassword : Window
     {
+        bool editPassword;
+        public CreatePassword(bool editPassword=false)
+        {
+            InitializeComponent();
+            this.editPassword = editPassword;
+            if (editPassword) loadEditPasswordWindow();
+        }
         public CreatePassword()
         {
             InitializeComponent();
+            this.editPassword = false;
+        }
+
+            private void loadEditPasswordWindow()
+        {
+            Title_L.Content = "Edit Password";
+            Password_L.Content = "New Password";
+            button_L.Content = "Save";
         }
 
 
@@ -39,22 +54,6 @@ namespace AccomodationManagementSystem
         private void buttonBorder_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
 
-            //var thePass = CreatePasswordBox.Password;
-            //using (LoginDataContext context = new LoginDataContext())
-            //{
-            //    bool accessGranted = context.m_loginInfo.Any(loginDetails => loginDetails.Password == thePass);
-            //    if (accessGranted)
-            //    {
-            //        MainWindow MainApp = new MainWindow();
-            //        this.Close();
-            //        MainApp.Show();
-            //    }
-
-            //}
-
-
-
-
             if (CreatePasswordBox.Password == "") {
                 errorLabel.Content = "Please Enter a Password";
             } else if(ConfirmPasswordBox.Password == "")
@@ -67,6 +66,14 @@ namespace AccomodationManagementSystem
             if (CreatePasswordBox.Password == ConfirmPasswordBox.Password) {
                 using (LoginDataContext context = new LoginDataContext())
                 {
+                    if (editPassword)
+                    {
+                        context.m_loginInfo.Where(userInfo => userInfo.user == "ADMIN").FirstOrDefault().Password = ConfirmPasswordBox.Password;
+                        context.SaveChanges();
+                        this.Close();
+                        return;
+                    }
+
                     //creates a new login info into the database with the chosen password
                     loginInfo temp = new loginInfo();
                     temp.Password = ConfirmPasswordBox.Password;

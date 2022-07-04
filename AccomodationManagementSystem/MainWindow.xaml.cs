@@ -17,7 +17,8 @@ using System.Windows.Shapes;
 
 using System.Diagnostics;
 using AccomodationManagementSystem.VacancyDatabaseClasses;
-
+using System.Windows.Threading;
+using System.IO;
 
 namespace AccomodationManagementSystem
 {
@@ -48,13 +49,24 @@ namespace AccomodationManagementSystem
     {
         DateTime loadedMonth = new DateTime(1, 1, 1);
         private int datesGenerated = 30;
+        private bool randomCellColours = true;
 
         public MainWindow()
         {
             InitializeComponent();
+            LoadUserSettings();
             SetupTable();
             LoadCurrentMonth();
             GenerateTable();
+            startDailyTimer();
+        }
+
+        public void LoadUserSettings() {
+            using (LoginDataContext context = new LoginDataContext())
+            {
+                datesGenerated = context.m_loginInfo.Where(userInfo => userInfo.user == "ADMIN").FirstOrDefault().columnGenerated_S;
+                randomCellColours = context.m_loginInfo.Where(userInfo => userInfo.user == "ADMIN").FirstOrDefault().randomCellColour_S;
+            }
         }
 
         private void SetupTable()
@@ -189,7 +201,8 @@ namespace AccomodationManagementSystem
 
                     //create brush colours
                     Brush white = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-                    Brush bookedColour = new SolidColorBrush(Color.FromRgb(81, 105, 252));
+                    Brush bookedColour = new SolidColorBrush(Color.FromRgb(81, 105, 252)); // default booked Colour
+
 
                     //create a dictionary with the key as the booking ID and the value as a list of dates that the booking occupies
                     Dictionary<int, IEnumerable<string>> bookedDates = new Dictionary<int, IEnumerable<string>>();
@@ -258,9 +271,17 @@ namespace AccomodationManagementSystem
                                     dayOffset += bookedDatesSorted.ElementAt(bookDatesOffsetCounter).Value.Count() - 1;
                                     bookDatesOffsetCounter++;
 
+                                    if (randomCellColours)
+                                    {
+                                        //Random Booking Colour
+                                        Random random = new Random();
+                                        List<Brush> randomBrushes = new List<Brush>() { new SolidColorBrush(Color.FromRgb(206, 47, 251)), new SolidColorBrush(Color.FromRgb(103, 70, 235)), new SolidColorBrush(Color.FromRgb(75, 139, 250)), new SolidColorBrush(Color.FromRgb(57, 188, 227)), new SolidColorBrush(Color.FromRgb(65, 144, 129)) };
+                                        bookedColour = randomBrushes[(int)(random.NextDouble() * 5)];
+                                    }
                                 }
                                 else
                                 {
+                                    
                                     //add nothing
                                     firstName.Add("");
                                     vacancyColours.Add(white);
@@ -324,12 +345,7 @@ namespace AccomodationManagementSystem
                 MessageBox.Show("There is already a booking on the selected cell", "Error Adding Booking");
             }
         }
-        private void AddRoom_B_Click(object sender, RoutedEventArgs e)
-        {
-            // when the add room button is clicked then create the add room window
-            AddRoomWindow addRoomWindow = new AddRoomWindow();
-            addRoomWindow.ShowDialog();
-        }
+
 
         private bool validateCell()
         {
@@ -478,11 +494,7 @@ namespace AccomodationManagementSystem
             GenerateTable();
         }
 
-        private void EditRoom_B_Click(object sender, RoutedEventArgs e)
-        {
-            EditRoomWindow editRoom = new EditRoomWindow();
-            editRoom.ShowDialog();
-        }
+
 
         private void updateCurrentMonthText() {
             if (loadedMonth.Year != loadedMonth.AddDays(datesGenerated).Year)
@@ -505,6 +517,52 @@ namespace AccomodationManagementSystem
 
             AddBookingWindow editRoomWindow = new AddBookingWindow(vacancyTable.SelectedCells.FirstOrDefault().Column.Header.ToString() + year , ((vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item).roomNumber, true, ((vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item).bookingsIDs[selectedElement]);
             editRoomWindow.ShowDialog();
+        }
+        //creates a global dispatcher timer
+        DispatcherTimer dispatcherTimer = new DispatcherTimer();
+
+        //starts the daily timer which will call new date when a new date arrives
+        private void startDailyTimer() {
+            dispatcherTimer.Interval = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.AddDays(1).Day, 0, 0, 0) - DateTime.Now;
+            //dispatcherTimer.Interval = TimeSpan.FromSeconds(5);
+            dispatcherTimer.Tick -= newDate;
+            dispatcherTimer.Tick += newDate;
+            dispatcherTimer.Start();
+        }
+        //function that is called when a new date arrives
+        private void newDate(object sender, EventArgs e) { 
+            dispatcherTimer.Stop(); //temporary stop the dispatch timer
+            GenerateTable(); // regenerate the table
+            backupDatabase(); //make a backup of today's database
+            startDailyTimer(); // restart the timer
+        }
+
+        private void backupDatabase()
+        {
+            try {
+                //makes sure the folder exists
+                if (!Directory.Exists(Environment.CurrentDirectory + "\\BackUps"))
+                {
+                    System.IO.Directory.CreateDirectory(Environment.CurrentDirectory + "\\BackUps");
+                }
+
+                //variable storing the path to the current database and the backup database
+                string backupPath = Environment.CurrentDirectory + "\\BackUps\\accommodation" + DateTime.Now.ToString("_dd-MM-yyyy") + ".db";
+                string dataBasePath = Environment.CurrentDirectory + "\\accommodation.db";
+
+                //copy the current database to the backupdatabase file
+                File.Copy(dataBasePath, backupPath);
+
+            }
+            catch {
+                Trace.WriteLine("Backup Saving Error");
+            }
+        }
+
+        private void Settings_B_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsWindow settingsWindow = new SettingsWindow();
+            settingsWindow.ShowDialog();
         }
     }
 }
