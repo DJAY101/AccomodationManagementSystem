@@ -9,7 +9,48 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="AccomiIcon.png" />
+    <None Remove="Resources\ArrowLeft.png" />
+    <None Remove="Resources\ArrowRight.png" />
+    <None Remove="Resources\CrossIcon.png" />
+    <None Remove="Resources\EditIcon.png" />
+    <None Remove="Resources\HomeIcon.png" />
+    <None Remove="Resources\MinusIcon.png" />
+    <None Remove="Resources\PlusIcon.png" />
+    <None Remove="Resources\SearchIcon.png" />
+    <None Remove="Resources\SettingsCog.png" />
+    <None Remove="Resources\SupportIcon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="AccomiIcon.ico" />
+    <Content Include="Resources\CrossIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="AccomiIcon.png" />
+    <Resource Include="Resources\ArrowLeft.png" />
+    <Resource Include="Resources\ArrowRight.png" />
+    <Resource Include="Resources\EditIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\HomeIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\MinusIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\SearchIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\SettingsCog.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\SupportIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\PlusIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>

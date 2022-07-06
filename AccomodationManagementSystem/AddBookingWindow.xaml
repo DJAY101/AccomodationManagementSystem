@@ -5,24 +5,51 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AccomodationManagementSystem"
         mc:Ignorable="d"
-        Title="AddBookingWindow" Height="420" Width="800" Topmost="True" Focusable="True" WindowStartupLocation="CenterScreen">
+        Title="AddBookingWindow" Height="420" Width="800" Topmost="True" Focusable="True" WindowStartupLocation="CenterScreen" Background="#9FD0F5
+">
 
 
     <Window.Resources>
         <Style TargetType="TextBlock" x:Key="labels">
             <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Foreground" Value="White"/>
         </Style>
 
         <Style TargetType="TextBox">
             <Setter Property="FontSize" Value="25"/>
         </Style>
+        <Style TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" Background="{TemplateBinding Background}" BorderBrush="#2E3E69" BorderThickness="2">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center"/>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#3C2C7D"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background" Value="DodgerBlue"/>
+
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="10"/>
+                </Style>
+            </Style.Resources>
+        </Style>
     </Window.Resources>
     
     <DockPanel LastChildFill="True">
-        <Border DockPanel.Dock="Top" MaxHeight="50" VerticalAlignment = "Top" BorderBrush="DeepSkyBlue" BorderThickness="2">
+        <Border DockPanel.Dock="Top" MaxHeight="50" VerticalAlignment = "Top"  Background="#635BBC" >
             <Grid>
-                <TextBlock x:Name="title_T" FontSize="30"> Booking Entry - Room 1 Queen Room</TextBlock>
-                <Button x:Name="Save_B" HorizontalAlignment="Right" Width="80" Background="DodgerBlue" Foreground="White" Click="Save_B_Click">Save</Button>
+                <TextBlock x:Name="title_T" FontSize="30" Foreground="White"> Booking Entry - Room 1 Queen Room</TextBlock>
+                <Button x:Name="Save_B" HorizontalAlignment="Right" Width="80" Foreground="White" Click="Save_B_Click">Save</Button>
             </Grid>
         </Border>
         <Grid>
@@ -30,63 +57,68 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0" Margin="20">
-                <TextBlock Style="{StaticResource labels}">
+            <Border Background="#454575" Margin="20" CornerRadius="10">
+                <StackPanel Grid.Column="0" Margin="10">
+                    <TextBlock Style="{StaticResource labels}">
                     First Name
-                </TextBlock>
-                <TextBox x:Name="FirstName_TB" Height="30"></TextBox>
-                <TextBlock Style="{StaticResource labels}">
+                    </TextBlock>
+                    <TextBox x:Name="FirstName_TB" Height="30"></TextBox>
+                    <TextBlock Style="{StaticResource labels}">
                     Surname
-                </TextBlock>
-                <TextBox x:Name="Surname_TB" Height="30"></TextBox>
-                <TextBlock Style="{StaticResource labels}">
+                    </TextBlock>
+                    <TextBox x:Name="Surname_TB" Height="30"></TextBox>
+                    <TextBlock Style="{StaticResource labels}">
                     Phone Number
-                </TextBlock>
-                <TextBox x:Name="PhoneNumber_TB" Height="30"></TextBox>
-                <TextBlock Style="{StaticResource labels}">
+                    </TextBlock>
+                    <TextBox x:Name="PhoneNumber_TB" Height="30"></TextBox>
+                    <TextBlock Style="{StaticResource labels}">
                     Check-In Time
-                </TextBlock>
-                <TextBox x:Name="CheckInTime_TB" Height="30"></TextBox>
+                    </TextBlock>
+                    <TextBox x:Name="CheckInTime_TB" Height="30"></TextBox>
 
-                <TextBlock  Style="{StaticResource labels}">
+                    <TextBlock  Style="{StaticResource labels}">
                     Extra Details
-                </TextBlock>
-                <TextBox x:Name="ExtraDetails_TB" Height="30"></TextBox>
+                    </TextBlock>
+                    <TextBox x:Name="ExtraDetails_TB" Height="30"></TextBox>
 
-            </StackPanel>
-            
-            <StackPanel Grid.Column="1" Margin="20">
-
-                <!--<textblock x:name="datefrom_t" style="{staticresource labels}">
-                    check-in: 23-06-22
-                </textblock>-->
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource labels}" Margin="0, 0, 10, 0" >Check-In:</TextBlock>
-                    <DatePicker x:Name="CheckIn_DP" SelectedDateChanged="CheckIn_DP_SelectedDateChanged" />
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource labels}" Margin="0, 0, 10, 0">Check-Out:</TextBlock>
-                    <DatePicker x:Name="checkOut_DP" SelectedDateChanged="checkOut_DP_SelectedDateChanged"></DatePicker>
-                </StackPanel>
-                <TextBlock x:Name="StayDuration_T" Style="{StaticResource labels}">
+            </Border>
+            <Border Grid.Column="1" Margin="20" Background="#454575" CornerRadius="10">
+                <DockPanel>
+                    <StackPanel Margin="10" DockPanel.Dock="Top">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource labels}" Margin="0, 0, 10, 0" >Check-In:</TextBlock>
+                            <DatePicker x:Name="CheckIn_DP" SelectedDateChanged="CheckIn_DP_SelectedDateChanged" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource labels}" Margin="0, 0, 10, 0">Check-Out:</TextBlock>
+                            <DatePicker x:Name="checkOut_DP" SelectedDateChanged="checkOut_DP_SelectedDateChanged"></DatePicker>
+                        </StackPanel>
+                        <TextBlock x:Name="StayDuration_T" Style="{StaticResource labels}">
                     Number of Nights: 0
-                </TextBlock>
-                <TextBlock Style="{StaticResource labels}">
+                        </TextBlock>
+                        <DockPanel>
+                            <TextBlock Style="{StaticResource labels}">
                     Daily Rate:
-                </TextBlock>
-                <TextBox x:Name="DailyRate_TB" TextChanged="DailyRate_TB_TextChanged" Height="30"></TextBox>
-                <TextBlock x:Name="Total_T" Style="{StaticResource labels}">
-                    Total: $0.00
-                </TextBlock>
-                <TextBlock x:Name="GST_T" Style="{StaticResource labels}">
-                    GST: $0.00
-                </TextBlock>
-                <TextBlock x:Name="WithoutGST_T" Style="{StaticResource labels}">
-                    Total without GST: $0.00
-                </TextBlock>
-
-
-            </StackPanel>
+                            </TextBlock>
+                            <TextBox x:Name="DailyRate_TB" Margin="10, 0,0,0" TextChanged="DailyRate_TB_TextChanged" Height="30"></TextBox>
+                        </DockPanel>
+                    </StackPanel>
+                    <Border Height="120" VerticalAlignment="Bottom" Background="#527BD0" CornerRadius="10">
+                        <StackPanel VerticalAlignment="Bottom" Margin="20">
+                            <TextBlock x:Name="Total_T" Style="{StaticResource labels}">
+                               Total: $0.00
+                            </TextBlock>
+                            <TextBlock x:Name="GST_T" Style="{StaticResource labels}">
+                              GST: $0.00
+                            </TextBlock>
+                            <TextBlock x:Name="WithoutGST_T" Style="{StaticResource labels}">
+                               Total without GST: $0.00    
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+                </DockPanel>
+            </Border>
         </Grid>
     </DockPanel>
 </Window>

@@ -169,7 +169,7 @@ namespace AccomodationManagementSystem
                 }
 
 
-                Brush selectedColour = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+                Brush selectedColour = new SolidColorBrush(Color.FromRgb(255, 80, 35));
 
                 //colour the cell depending on the whether the room is booked (binding the cell background colour to the vacancyColour atribute of the item)
                 Style cStyle = new Style(typeof(DataGridCell));

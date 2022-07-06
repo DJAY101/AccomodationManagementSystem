@@ -5,71 +5,244 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AccomodationManagementSystem"
         mc:Ignorable="d"
-        Title="Accomi Accommodation Management" Height="1080" Width="1920">
+        Title="Accomi Accommodation Management" Height="1080" Width="1920" Background="#1F1F1F">
 
 
     <Window.Resources>
         <Style x:Key="infoTextStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Foreground" Value="White"/>
         </Style>
+
+        <Style TargetType="Button" x:Key="BetterButton">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" Background="{TemplateBinding Background}" BorderBrush="#2E3E69" BorderThickness="2">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center"/>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#EB873F"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                    
+                </Setter.Value>
+            </Setter>
+            
+
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="20"/>
+                </Style>
+            </Style.Resources>
+        </Style>
+        
     </Window.Resources>
 
     <DockPanel LastChildFill="True">
-        <Border DockPanel.Dock="Left" Width="270" HorizontalAlignment="Left" BorderThickness="10" BorderBrush="DarkKhaki">
-            <Grid>
+        <Border DockPanel.Dock="Left" Width="270" HorizontalAlignment="Left" BorderThickness="0" BorderBrush="White">
+            <Grid Background="#262626">
                 <StackPanel VerticalAlignment="Top">
-                    <Button x:Name="AddBooking_B" FontSize="50" Content="Add" Click="AddBooking_B_Click"></Button>
-                    <Button x:Name="EditBooking_B" FontSize="50" Click="EditBooking_B_Click">Edit</Button>
-                    <Button x:Name="DeleteBooking_B" FontSize="50" Click="DeleteBooking_B_Click">Delete</Button>
-                    <Button x:Name="SearchMonth_B" FontSize="35" Click="SearchMonth_B_Click">Search Month</Button>
-                    <Calendar x:Name="searchMonth_C" DisplayMode="Year" SelectionMode="SingleDate" SelectedDatesChanged="searchMonth_C_SelectedDatesChanged" Visibility="Collapsed"></Calendar>
-                    <Button x:Name="CurrentMonth_B" FontSize="35" Click="CurrentMonth_B_Click">Current Month</Button>
+                    <Border Height="150" CornerRadius="20" Background="#635BBC">
+                        <StackPanel Margin="10">
+                            <Image Source="/AccomiIcon.png" Height="80"/>
+                            <TextBlock Foreground="White" HorizontalAlignment="Center" FontSize="30" FontWeight="DemiBold"> ACCOMI </TextBlock>
+                        </StackPanel>
+                    </Border>
+                    <Border Background="#596EC2" CornerRadius="10" Margin="10">
+                        <StackPanel Margin="5" >
+                            <TextBlock Foreground="White" HorizontalAlignment="Center" FontSize="30">ACTIONS</TextBlock>
+                            <Button Margin="0, 2" x:Name="AddBooking_B" Height="60" HorizontalContentAlignment="Left"  Click="AddBooking_B_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="\Resources\PlusIcon.png"/>
+                                    <TextBlock VerticalAlignment="Center" FontSize="40" Foreground="White">ADD</TextBlock>
+                                </StackPanel>
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource BetterButton}">
+                                        <Setter Property="Background" Value="#65E182"/>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                            <Button Margin="0, 2" x:Name="EditBooking_B" Height="60" HorizontalContentAlignment="Left" Click="EditBooking_B_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="\Resources\EditIcon.png"/>
+                                    <TextBlock VerticalAlignment="Center" Foreground="White" FontSize="40">EDIT</TextBlock>
+                                </StackPanel>
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource BetterButton}">
+                                        <Setter Property="Background" Value="#3FB9FF"/>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                            <Button Margin="0, 2" x:Name="DeleteBooking_B" Height="60" HorizontalContentAlignment="Left"  Click="DeleteBooking_B_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="\Resources\MinusIcon.png"/>
+                                    <TextBlock VerticalAlignment="Center" Foreground="White" FontSize="40">DELETE</TextBlock>
+                                </StackPanel>
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource BetterButton}">
+                                        <Setter Property="Background" Value="#F55C54"/>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                            <Button Margin="0, 2" x:Name="SearchMonth_B" Height="60" HorizontalContentAlignment="Left"  Click="SearchMonth_B_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="\Resources\SearchIcon.png"/>
+                                    <TextBlock VerticalAlignment="Center" Foreground="White" FontSize="22">SEARCH MONTH</TextBlock>
+                                </StackPanel>
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource BetterButton}">
+                                        <Setter Property="Background" Value="#5553E0"/>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                            <Calendar x:Name="searchMonth_C" DisplayMode="Year" SelectionMode="SingleDate" SelectedDatesChanged="searchMonth_C_SelectedDatesChanged" Visibility="Collapsed"></Calendar>
+                            <Button Margin="0, 2" x:Name="CurrentMonth_B" Height="60" HorizontalContentAlignment="Left" Click="CurrentMonth_B_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="\Resources\HomeIcon.png"/>
+                                    <TextBlock VerticalAlignment="Center" Foreground="White" FontSize="21">CURRENT MONTH</TextBlock>
+                                </StackPanel>
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource BetterButton}">
+                                        <Setter Property="Background" Value="#4969E0"/>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
 
+                        </StackPanel>
+                    </Border>
+                   
                 </StackPanel>
-                <StackPanel VerticalAlignment="Bottom">
-                    <Button FontSize="50">Support</Button>
-                    <Button x:Name="Settings_B" FontSize="50" Click="Settings_B_Click">Settings</Button>
-                    <Button x:Name="Logout_B" FontSize="40" Click="Logout_B_Click">Log Out</Button>
-                </StackPanel>
+                <Grid VerticalAlignment="Bottom"  Height="50" Background="#596EC2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                   
+
+                    <Button Margin="2" x:Name="Logout_B" FontSize="30" Click="Logout_B_Click" Grid.Column="0" Foreground="White">
+                        Log Out
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource BetterButton}">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Margin="2" x:Name="Settings_B" Click="Settings_B_Click" Grid.Column="1" >
+                        <Image Source="/Resources/SettingsCog.PNG"/>
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource BetterButton}">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Margin="2" Grid.Column="2">
+                        <Image Source="/Resources/SupportIcon.PNG"/>
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource BetterButton}">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
             </Grid>
         </Border>
-        <Border DockPanel.Dock="Top" MaxHeight="100" VerticalAlignment="Top" BorderThickness="10" BorderBrush="MediumPurple">
-            <TextBlock TextAlignment="Center" FontSize="50">DATE</TextBlock>
-        </Border>
-        <Border BorderThickness="5" BorderBrush="ForestGreen" DockPanel.Dock="Bottom">
-            <DockPanel LastChildFill="True"  VerticalAlignment="Bottom" MaxHeight="100">
-                <Button x:Name="previousMonth_B" Click="previousMonth_B_Click" FontSize="40">ARROW LEFT</Button>
-                <Button x:Name="nextMonth_B" Click="nextMonth_B_Click" FontSize="40" HorizontalAlignment="Right" DockPanel.Dock="Right">ARROW RIGHT</Button>
-                <TextBlock x:Name="CurrentMonth" FontSize="50" HorizontalAlignment="Center">MONTH - YEAR</TextBlock>
+        <Border Margin="2, 0, 0, 0" CornerRadius="10" Background="#635BBC" DockPanel.Dock="Top">
+            <DockPanel LastChildFill="True"  VerticalAlignment="Bottom" Height="60" Margin="3">
+                <Button x:Name="previousMonth_B" Click="previousMonth_B_Click" FontSize="40" Width="90">
+                    <Image Source="/Resources/ArrowLeft.png"/>
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource BetterButton}">
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button x:Name="nextMonth_B" Click="nextMonth_B_Click" FontSize="40" Width="90" HorizontalAlignment="Right" DockPanel.Dock="Right">
+                    <Image Source="/Resources/ArrowRight.png" />
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource BetterButton}">
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <TextBlock x:Name="CurrentMonth" FontSize="50" HorizontalAlignment="Center" Foreground="White">MONTH - YEAR</TextBlock>
             </DockPanel>
         </Border>
+
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="1.5*"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <DataGrid x:Name="vacancyTable" RowHeight="40" AutoGenerateColumns="False" Grid.Row="0" SelectedCellsChanged="vacancyTable_SelectedCellsChanged"/>
-            <ScrollViewer  Grid.Row="1">
-                <StackPanel>
+            <DataGrid x:Name="vacancyTable" RowHeight="40" AutoGenerateColumns="False" Grid.Row="0" SelectedCellsChanged="vacancyTable_SelectedCellsChanged" Background="#7E8EC7"/>
 
-                    <TextBlock x:Name="Vacant_T" Style="{StaticResource infoTextStyle}"> Vacant: NA</TextBlock>
-                    <TextBlock x:Name="RoomNumber_T" Style="{StaticResource infoTextStyle}"> Room Number: NA</TextBlock>
-                    <TextBlock x:Name="RoomType_T" Style="{StaticResource infoTextStyle}"> Room Type: NA</TextBlock>
-                    <TextBlock x:Name="BookingID_T" Style="{StaticResource infoTextStyle}"> Booking ID: NA</TextBlock>
-                    <TextBlock x:Name="FullName_T" Style="{StaticResource infoTextStyle}"> Full Name: NA</TextBlock>
-                    <TextBlock x:Name="PhoneNumber_T" Style="{StaticResource infoTextStyle}"> Phone Number: NA</TextBlock>
-                    <TextBlock x:Name="ArrivalTime_T" Style="{StaticResource infoTextStyle}"> Arrival Time: NA</TextBlock>
-                    <TextBlock x:Name="ExtraDetails_T" Style="{StaticResource infoTextStyle}"> Extra Details: NA</TextBlock>
-                    <TextBlock x:Name="CheckInDate_T" Style="{StaticResource infoTextStyle}"> Check In Date: NA</TextBlock>
-                    <TextBlock x:Name="CheckOutDate_T" Style="{StaticResource infoTextStyle}"> Check Out Date: NA</TextBlock>
-                    <TextBlock x:Name="Nights_T" Style="{StaticResource infoTextStyle}"> Nights: NA</TextBlock>
-                    <TextBlock x:Name="DailyRate_T" Style="{StaticResource infoTextStyle}"> Daily Rate: NA</TextBlock>
-                    <TextBlock x:Name="TotalPrice_T" Style="{StaticResource infoTextStyle}"> Total Price: NA</TextBlock>
 
-                </StackPanel>
-            </ScrollViewer>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
+                <Border Grid.Column="0" Margin="30" Background="#3B3B64" CornerRadius="20">
+                    <DockPanel>
+                        <Border Background="#2C2C4A" DockPanel.Dock="Top">
+                            <TextBlock  Foreground="White" HorizontalAlignment="Center" FontSize="30">BASIC DETAILS</TextBlock>
+                        </Border>
+                        <ScrollViewer>
+                            <StackPanel Margin="10">
+                                <TextBlock x:Name="Vacant_T" Style="{StaticResource infoTextStyle}"> Vacant: NA</TextBlock>
+                                <TextBlock x:Name="RoomNumber_T" Style="{StaticResource infoTextStyle}"> Room Number: NA</TextBlock>
+                                <TextBlock x:Name="RoomType_T" Style="{StaticResource infoTextStyle}"> Room Type: NA</TextBlock>
+                                <TextBlock x:Name="BookingID_T" Style="{StaticResource infoTextStyle}"> Booking ID: NA</TextBlock>
+                                <TextBlock x:Name="CheckInDate_T" Style="{StaticResource infoTextStyle}"> Check In Date: NA</TextBlock>
+                                <TextBlock x:Name="CheckOutDate_T" Style="{StaticResource infoTextStyle}"> Check Out Date: NA</TextBlock>
+
+                            </StackPanel>
+                        </ScrollViewer>
+                    </DockPanel>
+                </Border>
+
+                <Border Grid.Column="1" Margin="30" Background="#3B3B64" CornerRadius="20">
+                    <DockPanel>
+                        <Border Background="#2C2C4A" DockPanel.Dock="Top">
+                            <TextBlock  Foreground="White" HorizontalAlignment="Center" FontSize="30">BOOKING DETAILS</TextBlock>
+                        </Border>
+                        
+                        <ScrollViewer>
+                            <StackPanel Margin="10">
+                                <TextBlock x:Name="FullName_T" Style="{StaticResource infoTextStyle}"> Full Name: NA</TextBlock>
+                                <TextBlock x:Name="PhoneNumber_T" Style="{StaticResource infoTextStyle}"> Phone Number: NA</TextBlock>
+                                <TextBlock x:Name="ArrivalTime_T" Style="{StaticResource infoTextStyle}"> Arrival Time: NA</TextBlock>
+                                <TextBlock x:Name="Nights_T" Style="{StaticResource infoTextStyle}"> Nights: NA</TextBlock>
+                                <TextBlock x:Name="TotalPrice_T" Style="{StaticResource infoTextStyle}"> Total Price: NA</TextBlock>
+                                <TextBlock x:Name="ExtraDetails_T" TextWrapping="Wrap" Style="{StaticResource infoTextStyle}"> Extra Details: NA</TextBlock>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </DockPanel>
+                </Border>
+
+                <Border Grid.Column="2" Margin="30" Background="#3B3B64" CornerRadius="20">
+                    <DockPanel>
+                        <Border Background="#2C2C4A" DockPanel.Dock="Top">
+                            <TextBlock  Foreground="White" HorizontalAlignment="Center" FontSize="30">STATISTICS</TextBlock>
+                        </Border>
+                        <ScrollViewer>
+                            <StackPanel Margin="10">
+                                <TextBlock x:Name="DailyRate_T" Style="{StaticResource infoTextStyle}"> Daily Rate: NA</TextBlock>
+
+                            </StackPanel>
+                        </ScrollViewer>
+                    </DockPanel>
+                </Border>
+
+            </Grid>
 
         </Grid>
 
