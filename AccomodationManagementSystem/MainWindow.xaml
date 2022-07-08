@@ -39,6 +39,12 @@
                 </Style>
             </Style.Resources>
         </Style>
+
+        <Style TargetType="Button">
+
+            <Setter Property="ToolTipService.InitialShowDelay" Value="500"/>
+
+        </Style>
         
     </Window.Resources>
 
@@ -55,7 +61,7 @@
                     <Border Background="#596EC2" CornerRadius="10" Margin="10">
                         <StackPanel Margin="5" >
                             <TextBlock Foreground="White" HorizontalAlignment="Center" FontSize="30">ACTIONS</TextBlock>
-                            <Button Margin="0, 2" x:Name="AddBooking_B" Height="60" HorizontalContentAlignment="Left"  Click="AddBooking_B_Click">
+                            <Button Margin="0, 2" x:Name="AddBooking_B" Height="60" HorizontalContentAlignment="Left"  Click="AddBooking_B_Click" ToolTip="Adds a new booking on the selected cell">
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="\Resources\PlusIcon.png"/>
                                     <TextBlock VerticalAlignment="Center" FontSize="40" Foreground="White">ADD</TextBlock>
@@ -66,7 +72,7 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
-                            <Button Margin="0, 2" x:Name="EditBooking_B" Height="60" HorizontalContentAlignment="Left" Click="EditBooking_B_Click">
+                            <Button Margin="0, 2" x:Name="EditBooking_B" Height="60" HorizontalContentAlignment="Left" Click="EditBooking_B_Click" ToolTip="Edit the booking in the selected cell">
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="\Resources\EditIcon.png"/>
                                     <TextBlock VerticalAlignment="Center" Foreground="White" FontSize="40">EDIT</TextBlock>
@@ -77,7 +83,7 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
-                            <Button Margin="0, 2" x:Name="DeleteBooking_B" Height="60" HorizontalContentAlignment="Left"  Click="DeleteBooking_B_Click">
+                            <Button Margin="0, 2" x:Name="DeleteBooking_B" Height="60" HorizontalContentAlignment="Left"  Click="DeleteBooking_B_Click" ToolTip="Delete the booking in the selected cell">
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="\Resources\MinusIcon.png"/>
                                     <TextBlock VerticalAlignment="Center" Foreground="White" FontSize="40">DELETE</TextBlock>
@@ -88,10 +94,10 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
-                            <Button Margin="0, 2" x:Name="SearchMonth_B" Height="60" HorizontalContentAlignment="Left"  Click="SearchMonth_B_Click">
+                            <Button Margin="0, 2" x:Name="SearchMonth_B" Height="60" HorizontalContentAlignment="Left"  Click="SearchMonth_B_Click" ToolTip="Quickly jumps to the selected date">
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="\Resources\SearchIcon.png"/>
-                                    <TextBlock VerticalAlignment="Center" Foreground="White" FontSize="22">SEARCH MONTH</TextBlock>
+                                    <TextBlock VerticalAlignment="Center" Foreground="White" FontSize="34">Search</TextBlock>
                                 </StackPanel>
                                 <Button.Style>
                                     <Style TargetType="Button" BasedOn="{StaticResource BetterButton}">
@@ -100,7 +106,7 @@
                                 </Button.Style>
                             </Button>
                             <Calendar x:Name="searchMonth_C" DisplayMode="Year" SelectionMode="SingleDate" SelectedDatesChanged="searchMonth_C_SelectedDatesChanged" Visibility="Collapsed"></Calendar>
-                            <Button Margin="0, 2" x:Name="CurrentMonth_B" Height="60" HorizontalContentAlignment="Left" Click="CurrentMonth_B_Click">
+                            <Button Margin="0, 2" x:Name="CurrentMonth_B" Height="60" HorizontalContentAlignment="Left" Click="CurrentMonth_B_Click" ToolTip="Quickly jumps back to the present">
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="\Resources\HomeIcon.png"/>
                                     <TextBlock VerticalAlignment="Center" Foreground="White" FontSize="21">CURRENT MONTH</TextBlock>
@@ -123,17 +129,17 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                   
 
-                    <Button Margin="2" x:Name="Logout_B" FontSize="30" Click="Logout_B_Click" Grid.Column="0" Foreground="White">
-                        Log Out
+
+                    <Button Margin="2" x:Name="Logout_B" FontSize="30" Click="Logout_B_Click" Grid.Column="0" Foreground="White" ToolTip="Logs out of the program.">
+                    Log Out
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource BetterButton}">
                                 <Setter Property="Background" Value="Transparent"/>
                             </Style>
                         </Button.Style>
                     </Button>
-                    <Button Margin="2" x:Name="Settings_B" Click="Settings_B_Click" Grid.Column="1" >
+                    <Button Margin="2" x:Name="Settings_B" Click="Settings_B_Click" Grid.Column="1" ToolTip="Opens the settings.">
                         <Image Source="/Resources/SettingsCog.PNG"/>
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource BetterButton}">
@@ -141,7 +147,7 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <Button Margin="2" Grid.Column="2">
+                    <Button Margin="2" Grid.Column="2" ToolTip="Opens online help">
                         <Image Source="/Resources/SupportIcon.PNG"/>
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource BetterButton}">

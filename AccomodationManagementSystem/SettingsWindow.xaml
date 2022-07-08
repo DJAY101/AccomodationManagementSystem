@@ -11,19 +11,49 @@
     <Window.Resources>
         <Style x:Key="label" TargetType="TextBlock">
             <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Foreground" Value="White"/>
         </Style>
 
         <Style TargetType="TextBox">
             <Setter Property="FontSize" Value="25"/>
         </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" Background="{TemplateBinding Background}" BorderBrush="#2E3E69" BorderThickness="2">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center"/>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#EB873F"/>                           
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background" Value="DodgerBlue"/>
+            <Setter Property="Foreground" Value="White"/>
+
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="10"/>
+                </Style>
+            </Style.Resources>
+        </Style>
+
+
     </Window.Resources>
     
     
     <DockPanel LastChildFill="True">
-        <Border DockPanel.Dock="Top" MaxHeight="50" VerticalAlignment = "Top" BorderBrush="DeepSkyBlue" BorderThickness="2">
+        <Border DockPanel.Dock="Top" MaxHeight="50" VerticalAlignment = "Top"  Background="#635BBC" >
             <Grid>
-                <TextBlock x:Name="title_T" FontSize="30">Accomi Settings</TextBlock>
-                <Button x:Name="Save_B" HorizontalAlignment="Right" Width="80" Background="DodgerBlue" Foreground="White" Click="Save_B_Click">Save</Button>
+                <TextBlock x:Name="title_T" FontSize="30" Foreground="White">Accomi Settings</TextBlock>
+                <Button x:Name="Save_B" HorizontalAlignment="Right" Width="80" Click="Save_B_Click">Save</Button>
             </Grid>
         </Border>
         <Grid>
@@ -31,28 +61,40 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Border Grid.Column="0" Margin="30">
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Style="{StaticResource label}"> Random Cell Colours:</TextBlock>
-                        <CheckBox x:Name="RandomCellColour_CB" VerticalAlignment="Center" Margin="15, 0, 0, 0"></CheckBox>
+            <Border Grid.Column="0" Margin="30" Background="#454575" CornerRadius="20">
+                <DockPanel>
+                    <Border DockPanel.Dock="Top" Height="30" Background="#2C2C4A">
+                        <TextBlock Foreground="White" FontSize="20" HorizontalAlignment="Center">
+                            Settings
+                        </TextBlock>
+                    </Border>
+                    <StackPanel Margin="20">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource label}" ToolTip="Random coloured cells for each booking"> Random Cell Colours:</TextBlock>
+                            <CheckBox x:Name="RandomCellColour_CB" VerticalAlignment="Center" Margin="15, 0, 0, 0"></CheckBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource label}" ToolTip="How many dates are shown in the table">Columns Shown:</TextBlock>
+                            <TextBox x:Name="ColumnGenerated_TB" Width="100" Margin="10, 0"></TextBox>
+                        </StackPanel>
                     </StackPanel>
-                    <TextBlock Style="{StaticResource label}"></TextBlock>
-                    <TextBlock Style="{StaticResource label}">Columns Shown:</TextBlock>
-                    <TextBox x:Name="ColumnGenerated_TB"></TextBox>
-
-
-
-                </StackPanel>
+                </DockPanel>
             </Border>
-            <Border Grid.Column="1" Margin="30">
-                <StackPanel>
-                    <Button x:Name="EditRoom_B" FontSize="35" Click="EditRoom_B_Click">Edit Room</Button>
-                    <Button x:Name="AddRoom_B" FontSize="35" Click="AddRoom_B_Click">Add Room</Button>
-                    <Button x:Name="LoadBackUp_B" FontSize="35" Click="LoadBackUp_B_Click">Load Backup</Button>
-                    <Button x:Name="ChangePass_B" FontSize="35" Click="ChangePass_B_Click" Margin="0, 30">Change Password</Button>
+            <Border Grid.Column="1" Margin="30" Background="#454575" CornerRadius="20">
+                <DockPanel>
+                    <Border DockPanel.Dock="Top" Height="30" Background="#2C2C4A">
+                        <TextBlock Foreground="White" FontSize="20" HorizontalAlignment="Center">
+                            Actions
+                        </TextBlock>
+                    </Border>
+                    <StackPanel Margin="20">
+                        <Button x:Name="EditRoom_B" FontSize="35" Click="EditRoom_B_Click" Margin="2" ToolTip="Edit the current rooms">Edit Rooms</Button>
+                        <Button x:Name="AddRoom_B" FontSize="35" Click="AddRoom_B_Click" Margin="2" ToolTip="Add new rooms">Add Room</Button>
+                        <Button x:Name="LoadBackUp_B" FontSize="35" Click="LoadBackUp_B_Click" Margin="2" ToolTip="Load a backup file or load another accomodation file">Load Backup</Button>
+                        <Button x:Name="ChangePass_B" FontSize="35" Click="ChangePass_B_Click" Margin="0, 30">Change Password</Button>
 
-                </StackPanel>
+                    </StackPanel>
+                </DockPanel>
             </Border>
         </Grid>
     </DockPanel>

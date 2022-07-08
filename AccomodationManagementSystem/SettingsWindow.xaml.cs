@@ -80,13 +80,15 @@ namespace AccomodationManagementSystem
             openFileDialog.Filter = "Database Files (*.db)|*.db";
             openFileDialog.InitialDirectory = Environment.CurrentDirectory + "\\BackUps";
             openFileDialog.ShowDialog();
-            
+
+
+            if (openFileDialog.FileName == "") return;
             if (openFileDialog.FileName == Environment.CurrentDirectory + "\\accommodation.db")
             {
                 MessageBox.Show("You cannot select the current database to load", "Error");
                 return;
             }
-
+            
             if(MessageBox.Show("Are you sure you want to load the backup, all data in the current database will be overwritten and lost?", "Load Backup", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
                 try
