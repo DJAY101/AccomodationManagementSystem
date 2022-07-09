@@ -529,8 +529,16 @@ namespace AccomodationManagementSystem
             int selectedElement = (selectedDate - loadedMonth).Days;
             if (((vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item).bookingsIDs[selectedElement] == -1) return;
 
-            AddBookingWindow editRoomWindow = new AddBookingWindow(vacancyTable.SelectedCells.FirstOrDefault().Column.Header.ToString() + year , ((vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item).roomNumber, true, ((vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item).bookingsIDs[selectedElement]);
-            editRoomWindow.ShowDialog();
+            using (AccomodationContext context = new AccomodationContext())
+            {
+                int bookingId = ((vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item).bookingsIDs[selectedElement];
+
+                DateTime checkInDate = DatabaseDateTimeStringToDateTime(context.m_bookings.Find(bookingId).CheckInDate);
+                AddBookingWindow editRoomWindow = new AddBookingWindow(checkInDate.ToString("dd-MM-yyyy"), ((vacancyData)vacancyTable.SelectedCells.FirstOrDefault().Item).roomNumber, true, bookingId);
+                editRoomWindow.ShowDialog();
+            }
+
+
         }
         //creates a global dispatcher timer
         DispatcherTimer dispatcherTimer = new DispatcherTimer();
@@ -577,6 +585,12 @@ namespace AccomodationManagementSystem
         {
             SettingsWindow settingsWindow = new SettingsWindow();
             settingsWindow.ShowDialog();
+        }
+
+        private void Support_B_Click(object sender, RoutedEventArgs e)
+        {
+            string filename = "...\\SoftwareSupportCard.pdf";
+            System.Diagnostics.Process.Start("explorer", filename);
         }
     }
 }

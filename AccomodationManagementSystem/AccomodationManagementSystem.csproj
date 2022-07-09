@@ -20,6 +20,7 @@
     <None Remove="Resources\SearchIcon.png" />
     <None Remove="Resources\SettingsCog.png" />
     <None Remove="Resources\SupportIcon.png" />
+    <None Remove="SoftwareSupportCard.pdf" />
   </ItemGroup>
 
   <ItemGroup>
@@ -51,6 +52,9 @@
     <Resource Include="Resources\PlusIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Content Include="SoftwareSupportCard.pdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

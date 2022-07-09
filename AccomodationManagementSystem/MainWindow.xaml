@@ -147,7 +147,7 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <Button Margin="2" Grid.Column="2" ToolTip="Opens online help">
+                    <Button x:Name="Support_B" Margin="2" Grid.Column="2" ToolTip="Opens online help" Click="Support_B_Click">
                         <Image Source="/Resources/SupportIcon.PNG"/>
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource BetterButton}">
