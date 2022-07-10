@@ -128,7 +128,7 @@ namespace AccomodationManagementSystem
             }
 
         }
-
+        //loads the title
         private void loadInfoTexts()
         {
             //load text elements from the database
@@ -144,6 +144,7 @@ namespace AccomodationManagementSystem
             }
         }
 
+        //if the window is in edit mode then load the booking details into text box
         private void loadFromDatabase() {
             using (AccomodationContext context = new AccomodationContext()) { 
                 bookingInfo booking = context.m_bookings.Find(bookingID);
@@ -158,10 +159,13 @@ namespace AccomodationManagementSystem
             }
         }
 
+        //when the check out date is changed
         private void checkOut_DP_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             updateStayDuration();
         }
+
+        //when the check in date changes then update the available check out dates
         private void CheckIn_DP_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             if(CheckIn_DP.SelectedDate != null) { dateFrom = (DateTime)CheckIn_DP.SelectedDate.Value; checkOut_DP.SelectedDate = CheckIn_DP.SelectedDate.Value.AddDays(1);}
@@ -199,7 +203,7 @@ namespace AccomodationManagementSystem
             {
                 Total_T.Text = "Total: $" + Math.Round(rate * stayDuration, 2).ToString();
                 GST_T.Text = "GST: $" + Math.Round(rate * stayDuration * 0.1, 2).ToString();
-                WithoutGST_T.Text = "Total Without GST: $" + Math.Round((rate * stayDuration) - (rate * stayDuration * 0.1), 2);
+                WithoutGST_T.Text = "Total Without GST: $" + Math.Round((rate * stayDuration) - (rate * stayDuration * 0.1), 2).ToString();
             }
         }
 
@@ -223,6 +227,25 @@ namespace AccomodationManagementSystem
                 }
                 context.Add(temp);
                 context.SaveChanges();
+
+                //foreach (var item in context.m_bookings)
+                //{
+                //    context.m_bookings.Remove(item);
+                //}
+                //context.SaveChanges();
+
+                //for (int room = 1; room <= 10; room++)
+                //{
+                //    for (int dayOffset = 0; dayOffset <= 365*10; dayOffset++)
+                //    {
+                //        bookingInfo temp = new bookingInfo() { CheckInDate = DateTime.Now.AddDays(dayOffset).ToString("dd-MM-yyyy"), CheckOutDate = DateTime.Now.AddDays(dayOffset + 1).ToString("dd-MM-yyyy"), DailyRate = 100, FirstName = room.ToString() + dayOffset.ToString(), RoomId = room };
+                //        context.Add(temp);
+
+
+                //    }
+                //}
+                //context.SaveChanges();
+
             }
 
             Application.Current.Windows.OfType<MainWindow>().FirstOrDefault().GenerateTable(); //regenerate the table on the main window
@@ -238,7 +261,7 @@ namespace AccomodationManagementSystem
 
             bool checkoutDateSelected = checkOut_DP.SelectedDate != null;
             bool checkinDateSelected = CheckIn_DP.SelectedDate != null;
-            bool validRate = float.TryParse(DailyRate_TB.Text, out float rate);
+            bool validRate = float.TryParse(DailyRate_TB.Text, out float rate) && rate >= 0;
             if (!checkoutDateSelected)
             {
                 MessageBox.Show("Please select a check-out date.", "Error Saving");

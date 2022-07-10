@@ -43,7 +43,7 @@ namespace AccomodationManagementSystem
         private bool validateResponse() {
 
             if (RoomType_TB.Text == null) { MessageBox.Show("Please enter a room type. EG Queen", "Error Saving"); return false; };
-            if (!int.TryParse(RoomNumber_TB.Text, out int number)) { MessageBox.Show("Please enter a room number. EG 1, 2, 3 ...", "Error Saving"); return false; }
+            if (!int.TryParse(RoomNumber_TB.Text, out int number) && number < 0) { MessageBox.Show("Please enter a room number. EG 1, 2, 3 ...", "Error Saving"); return false; }
             if (context.m_rooms.Find(int.Parse(RoomNumber_TB.Text)) != null) { MessageBox.Show("There is already an existing room with that number", "Error Saving"); return false; } 
             return true;
         

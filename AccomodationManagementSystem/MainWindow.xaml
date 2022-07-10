@@ -242,6 +242,8 @@
                         <ScrollViewer>
                             <StackPanel Margin="10">
                                 <TextBlock x:Name="DailyRate_T" Style="{StaticResource infoTextStyle}"> Daily Rate: NA</TextBlock>
+                                <TextBlock x:Name="GST_T" Style="{StaticResource infoTextStyle}"> GST: NA</TextBlock>
+                                <TextBlock x:Name="TotalNoGST_T" Style="{StaticResource infoTextStyle}"> Total Without GST: NA</TextBlock>
 
                             </StackPanel>
                         </ScrollViewer>

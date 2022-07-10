@@ -48,8 +48,8 @@ namespace AccomodationManagementSystem
                 MessageBox.Show("Please enter a valid columns shown value", "Error Saving");
                 return false;
             }
-            if (!int.TryParse(ColumnGenerated_TB.Text, out int value)) {
-                MessageBox.Show("Please enter a valid columns shown value", "Error Saving");
+            if (!int.TryParse(ColumnGenerated_TB.Text, out int value) && value <= 0) {
+                MessageBox.Show("Please enter a valid columns shown value, it must be greater than 0", "Error Saving");
                 return false;
             }
 
